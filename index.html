@@ -131,7 +131,7 @@ tbody tr.click:hover,tbody tr.sel{background:var(--soft)}
 .fk .v{font-size:21px;font-weight:700;margin:4px 0 6px;white-space:nowrap}
 .fk .v small{font-size:12px;color:var(--mute);font-weight:500}
 .fk .c{display:flex;justify-content:space-between;gap:6px;align-items:center;font-size:11.5px;color:var(--mute);flex-wrap:wrap}
-.fgrid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
+.fgrid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px;margin-bottom:16px}
 .fbox{border:1px solid var(--line);border-radius:10px;padding:13px 14px}
 .fbox h3{margin:0;font-size:13.5px;font-weight:600}
 .fbox .h3s{font-size:11.5px;color:var(--mute);margin:1px 0 8px}
@@ -177,6 +177,23 @@ tr.tot td{font-weight:700;background:var(--soft)}
 .sev.c{background:var(--red);color:#fff}.sev.h{background:var(--red-bg);color:var(--red-ink)}.sev.m{background:var(--amber-bg);color:var(--amber-ink)}.sev.l{background:var(--soft);color:var(--mute)}.sev.z{background:none;color:var(--faint);font-weight:400}
 .gov{display:grid;grid-template-columns:170px 1fr 48px;gap:10px;align-items:center;font-size:12.5px;margin:8px 0}
 .gov .t{text-align:right;font-weight:600}
+.hm{display:grid;gap:3px;font-size:11.5px}
+.hm div{padding:7px 4px;text-align:center;border-radius:5px;font-weight:600}
+.hm .hh{background:none;color:var(--mute);font-weight:600;font-size:11px;padding:4px 2px;line-height:1.2}
+.hm .rl{background:none;text-align:left;font-weight:600;color:var(--ink)}.hm .rl div{padding:0;text-align:left}
+@media (max-width:980px){.pulsegrid{grid-template-columns:1fr!important}}
+.hm .s4{background:var(--green-bg);color:var(--green-ink)}.hm .s3{background:var(--blue-bg);color:var(--blue-ink)}.hm .s2{background:var(--amber-bg);color:var(--amber-ink)}.hm .s1{background:var(--red-bg);color:var(--red-ink)}.hm .mk{background:var(--soft);color:var(--faint);font-weight:400}
+.rng{position:relative;height:18px;min-width:160px}
+.rng .ln{position:absolute;top:8px;left:0;right:0;height:2px;background:var(--line)}
+.rng .iq{position:absolute;top:4px;height:10px;background:var(--blue-bg);border:1px solid var(--blue);border-radius:3px}
+.rng .p50{position:absolute;top:1px;width:2px;height:16px;background:var(--blue)}
+.rng .us{position:absolute;top:3px;width:12px;height:12px;border-radius:50%;margin-left:-6px;border:2px solid var(--card)}
+.fun{display:grid;grid-template-columns:110px 1fr 54px;gap:10px;align-items:center;font-size:12.5px;margin:7px 0}
+.fun .bar{height:14px;border-radius:4px}.fun .bar i{border-radius:4px}
+.sk{display:grid;grid-template-columns:120px 1fr 64px 64px;gap:10px;align-items:center;font-size:12.5px;margin:9px 0}
+.sk .dbl{position:relative;height:16px;background:var(--soft);border-radius:4px}
+.sk .dbl i{position:absolute;left:0;top:0;bottom:0;border-radius:4px}
+.dotl{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:5px;vertical-align:0}
 @media (max-width:980px){.dr{grid-template-columns:110px 1fr 64px}.gov{grid-template-columns:120px 1fr 44px}}
 @media (max-width:980px){.params{grid-template-columns:1fr}}
 @media (max-width:980px){.stats{grid-template-columns:repeat(3,1fr)}.decs,.detail,.obs{grid-template-columns:1fr}.mini{grid-template-columns:1fr 1fr}.detail .nums{grid-template-columns:repeat(3,1fr)}}
@@ -255,6 +272,39 @@ tr.tot td{font-weight:700;background:var(--soft)}
       <h3 style="margin-top:16px">Мөнгөний мөчлөг (CCC)</h3><div class="h3s">Авлагын хоног + нөөцийн хоног − өглөгийн хоног</div><div id="ccc"></div></div>
   </div>
   <div class="note" id="cashNote"></div>
+</section>
+
+<section class="card" data-s="hr">
+  <div class="ch"><div class="num"></div><div><h2>Хүний нөөцийн стратеги ба төлөвлөлт</h2><p>Орон тоо, сонгон шалгаруулалт, цалингийн судалгаа, сэтгэл ханамж, 1:1 уулзалт, залгамж халаа, 2027 оны ур чадварын төлөвлөгөө</p></div></div>
+  <div class="fkpis" id="hrKpis"></div>
+  <div class="fgrid">
+    <div class="fbox"><h3>Орон тооны төлөвлөгөө ба гүйцэтгэл</h3><div class="h3s">Нийт ажилтан, сараар · 9–12 сар ХБГ · Key indicator (бодит)</div><div class="chart" id="hcChart"></div></div>
+    <div class="fbox"><h3>Хэлтсээр орон тоо</h3><div class="h3s">2025, 2026 төлөвлөгөө, 8-р сарын бодит, жилийн эцсийн таамаг · цалингийн зардал</div>
+      <div class="tw"><table><thead><tr><th>Хэлтэс</th><th class="rt">2025</th><th class="rt">Төлөвлөгөө</th><th class="rt">Бодит</th><th class="rt">12-р сар</th><th class="rt">Зөрүү</th></tr></thead><tbody id="hcBody"></tbody></table></div>
+      <div class="bsg" id="payMini" style="margin-top:12px"></div></div>
+  </div>
+  <div class="fbox" style="margin-bottom:16px"><h3>Цалингийн судалгаа, албан тушаалаар</h3><div class="h3s">Сарын нийт цалин, сая ₮ · зах зээлийн P25–P75 (цэнхэр муж), медиан (зураас), манай медиан (цэг) · compa-ratio = манай / зах зээлийн медиан</div>
+    <div class="tw"><table><thead><tr><th>Албан тушаал</th><th class="rt">Ажилтан</th><th class="rt">Манай медиан</th><th class="rt">Зах зээл P25 / P50 / P75</th><th style="min-width:180px">Байршил</th><th class="rt">Compa-ratio</th><th class="rt">P50 хүргэх зардал / жил</th><th>Дүгнэлт</th></tr></thead><tbody id="salBody"></tbody></table></div>
+    <div class="muted" style="margin-top:8px">Зах зээлийн тоо жишээ. Бодитоор цалингийн судалгааны байгууллага, Zangia/LinkedIn зарын өгөгдөл, групп доторх харьцуулалтаар шинэчилнэ. Хувь хүний цалинг харуулахгүй — 3-аас цөөн хүнтэй албан тушаалд манай медианыг нууна.</div></div>
+  <div class="fgrid">
+    <div class="fbox"><h3>Нээлттэй ажлын байр ба talent хайлт</h3><div class="h3s" id="taSub"></div>
+      <div class="tw"><table><thead><tr><th>Албан тушаал</th><th class="rt">Хоног</th><th class="rt">Өргөдөл</th><th class="rt">Ярилцлага</th><th class="rt">Санал</th><th class="rt">Дотоод</th><th>Гол суваг</th></tr></thead><tbody id="taBody"></tbody></table></div></div>
+    <div class="fbox"><h3>Сонгон шалгаруулалтын юүлүүр</h3><div class="h3s">Бүх нээлттэй ажлын байр · хөрвүүлэлтийн хувь</div><div id="funnel"></div>
+      <h3 style="margin-top:16px">Ажилд орсон суваг (12 сар)</h3><div id="srcMix" style="margin-top:6px"></div><div class="bsg" id="taMini" style="margin-top:12px"></div></div>
+  </div>
+  <div class="fbox" style="margin-bottom:16px"><h3>Сэтгэл ханамжийн судалгаа (pulse)</h3><div class="h3s" id="pulseSub"></div>
+    <div style="display:grid;grid-template-columns:minmax(0,1.7fr) minmax(0,1fr);gap:18px;align-items:start" class="pulsegrid"><div id="hm" style="overflow-x:auto"></div><div class="chart" id="enpsChart"></div></div></div>
+  <div class="fgrid" style="grid-template-columns:minmax(0,1fr)">
+    <div class="fbox"><h3>1:1 уулзалт ба уулзалтын ачаалал</h3><div class="h3s">Сүүлийн 30 хоног · календарийн агрегат өгөгдөл (уулзалтын агуулга биш)</div>
+      <div class="tw"><table><thead><tr><th>Алба</th><th>1:1 хамрах</th><th class="rt">Сүүлийн 1:1</th><th class="rt">Уулзалт / 7 хоног</th><th class="rt">Focus time</th><th class="rt">Үнэлгээ хийгдсэн</th></tr></thead><tbody id="ooBody"></tbody></table></div>
+      <div class="note" id="ooNote"></div></div>
+  </div>
+  <div class="fgrid" style="margin-bottom:0">
+    <div class="fbox"><h3>Түлхүүр албан тушаалын залгамж халаа</h3><div class="h3s">Залгамжлагчийн бэлэн байдал · нэрийг зөвхөн HR харна</div>
+      <div class="tw"><table><thead><tr><th>Албан тушаал</th><th class="rt">Одоо бэлэн</th><th class="rt">1–2 жилд</th><th>Нөлөөлөл</th><th>Төлөв</th></tr></thead><tbody id="sucBody"></tbody></table></div></div>
+    <div class="fbox"><h3>2027 оны ур чадварын эрэлт ба нийлүүлэлт</h3><div class="h3s">Шаардлагатай FTE (саарал) ба одоогийн (өнгөт) · хаах арга: Build — дотроо хөгжүүлэх, Buy — авах, Borrow — гэрээт</div><div id="skillGap"></div></div>
+  </div>
+  <div class="muted" style="margin-top:10px">Орон тоо, цалингийн зардал — TBTech Key indicator (бодит). Сонгон шалгаруулалт, судалгаа, 1:1, залгамж халаа, зах зээлийн цалин — жишээ өгөгдөл. Эх сурвалж: Odoo 19 HR (hr.employee, hr.applicant, hr.contract), pulse судалгаа (нэрээ нууцалсан, 5-аас доош хариулттай бүлгийг нууна), Microsoft 365 / Google Calendar.</div>
 </section>
 
 <section class="card" data-s="bonus">
@@ -508,6 +558,24 @@ const doraLv={dep:v=>v>=1?0:v>=1/7?1:v>=1/30?2:3,lead:v=>v<24?0:v<168?1:v<720?2:
 const grpLv=(r,dy)=>r.lead==null?null:Math.round((doraLv.dep(r.dep/(dy||30))+doraLv.lead(r.lead)+doraLv.cfr(r.cfr)+doraLv.mttr(r.mttr))/4);
 const E30=engAgg(30);
 
+
+/* ---------- Хүний нөөцийн өгөгдөл ---------- */
+const SAL=[["Программ менежер",1,9.5,9.0,11.5,14.0],["Төслийн менежер",8,6.8,6.0,7.2,8.8],["Бизнес аналист",6,5.6,5.0,6.0,7.2],["Бүтээгдэхүүний дизайнер",2,5.9,5.0,6.5,8.0],["Tech lead",5,8.2,8.5,9.8,11.5],["Ахлах программ хангамжийн инженер",10,6.9,6.5,7.8,9.2],["Программ хангамжийн инженер",10,4.6,4.0,4.8,5.8],["DevOps / Cloud инженер",8,6.1,6.5,7.2,8.5],["Data engineer",7,6.0,5.8,6.8,8.0],["ATM техникч",46,2.9,2.6,3.0,3.4],["Helpdesk",9,2.4,2.2,2.5,2.9],["Нягтлан бодогч",14,3.6,3.2,3.8,4.4],["HR мэргэжилтэн",6,3.4,3.0,3.5,4.1]];
+const TA=[["iOS / Android хөгжүүлэгч","Төслийн удирдлагын алба-1","r",64,38,4,0,"LinkedIn",1],["ABAP хөгжүүлэгч","Төслийн удирдлагын алба-1","r",71,9,2,0,"Зөвлөх компани",0],["Бүтээгдэхүүний дизайнер","Төслийн удирдлагын алба-1","r",22,54,6,1,"Zangia",0],["DevOps инженер","Дэд бүтэц, DevOps","a",35,21,3,1,"Санал болголт",2],["Data engineer","AI & data","a",28,30,5,0,"LinkedIn",1],["Бизнес аналист","Төслийн удирдлагын алба-1","a",15,42,3,0,"Zangia",3],["ATM техникч ×3","ATM service","a",19,66,9,2,"Zangia",0],["Helpdesk ×2","IT support","b",9,80,6,1,"Facebook",0]];
+const FUN=[["Өргөдөл",340],["Шүүлт давсан",123],["Ярилцлага",38],["Санал тавьсан",5],["Ажилд орсон (90 хоног)",14]];
+const SRCM=[["Zangia",38,"var(--navy)"],["LinkedIn",24,"var(--blue)"],["Санал болголт",18,"var(--teal)"],["Дотоод шилжилт",12,"var(--green)"],["Бусад",8,"var(--faint)"]];
+const DIMS=["Ажлын ачаалал","Удирдлагын дэмжлэг","Өсөлт хөгжил","Цалин урамшуулал","Хамт олон","Зорилгын тодорхой байдал"];
+const PULSE=[["pmo",31,-4,[2.6,3.6,3.9,3.1,4.2,3.0]],["hr",14,21,[3.5,3.9,3.4,3.3,4.1,3.8]],["sup",29,10,[3.0,3.7,3.2,3.0,4.0,3.6]],["infra",4,null,null],["ai",17,12,[3.2,3.4,4.0,3.2,4.0,2.9]],["fin",26,8,[2.9,3.8,3.1,3.4,3.9,3.9]],["atm",52,24,[3.4,3.5,2.9,2.8,4.3,3.8]]];
+const ENPS=[["4-р",12],["5-р",15],["6-р",9],["7-р",14],["8-р",18],["9-р",14]];
+const OO=[["pmo",58,24,14.5,41,70],["hr",86,11,9.0,55,100],["sup",62,19,6.5,62,85],["infra",73,15,8.0,58,90],["ai",55,27,12.0,46,65],["fin",70,16,7.5,60,95],["atm",61,21,3.5,70,80]];
+const SUC=[["Программ менежер",0,1,"r"],["Ахлах бүтээгдэхүүний дизайнер",0,0,"r"],["Tech lead — Платформ",0,1,"r"],["SAP FI/CO зөвлөх",0,0,"r"],["Дата / lakehouse архитектор",0,1,"r"],["Tech lead — Odoo 19",1,1,"a"],["АТМ засвар үйлчилгээний алба дарга",0,2,"a"],["Санхүүгийн алба дарга",1,0,"a"]];
+const SKG=[["Мобайл",6,1,"Buy"],["AI / ML",8,3,"Build"],["Data engineering",10,6,"Build"],["Cloud / DevOps",9,5,"Buy"],["ABAP / SAP",4,2,"Borrow"],["Odoo хөгжүүлэлт",18,15,"Build"],["BA / Product",10,8,"Build"]];
+const salCR=s=>s[2]/s[4], salOK=s=>s[1]>=3, wsum=(a,f,w)=>a.reduce((s,x)=>s+f(x)*w(x),0)/a.reduce((s,x)=>s+w(x),0);
+const PN=PULSE.filter(x=>x[3]), enpsAll=Math.round(wsum(PN,x=>x[2],x=>x[1])), respN=PULSE.reduce((s,x)=>s+x[1],0);
+const ooAll=Math.round(wsum(OO,x=>x[1],x=>DEPTS.find(d=>d.id===x[0]).n)), crAll=wsum(SAL.filter(salOK),salCR,x=>x[1]);
+const openPos=TA.reduce((s,t)=>s+(+(t[0].match(/×(\d)/)||[0,1])[1]),0), noSuc=SUC.filter(s=>!s[1]&&!s[2]).length, sucGap=SUC.filter(s=>!s[1]).length;
+const hcF=FIN.cons.hc;
+
 /* ---------- Удирдлагын харагдац ---------- */
 const ROLES={
  ceo:{lab:"CEO",who:"Гүйцэтгэх захирал",focus:"Стратеги, портфелийн эрэмбэ, хөрөнгө оруулалт, түлхүүр эрсдэл",secs:["dec","fin","budget","bonus","depts","port","trend"],
@@ -538,14 +606,15 @@ const ROLES={
    {q:"Repo засаглалыг групп түвшинд албадах уу?",s:"a",m:`CODEOWNERS <b>61%</b>, protected branch 92%, CI идэвхтэй 84%, signed commit 37%. SDLC VOL 02 стандартаас хоцорч байна.`,o:["Compliance framework + pipeline","Шинэ repo-д template заавал","Улирал бүр аудит"],src:"GitLab → Compliance center"},
    {q:"Tech lead-гүй, BA-гүй төслүүдийг яах вэ?",s:"r",m:`TL-гүй: <b>${noTL.map(p=>p.n).join(", ")}</b>. BA-гүй: ${noBA.map(p=>p.n).join(", ")}.`,o:["Одоогийн TL-д нэмэх","BRD батлагдтал эхлүүлэхгүй","Squad бүтэц рүү шилжих"],src:"Ontology: Project → Employee (role)"},
    {q:"Review ачааллыг тэнцвэржүүлэх үү?",s:"a",m:`Tech lead-ууд нийт review-ийн <b>${Math.round(ENGR.filter(e=>e.k==="tl").reduce((s,e)=>s+e.rev,0)/ENGR.reduce((s,e)=>s+e.rev,0)*100)}%</b>-ийг хийж байна. Эхний review хүртэл медиан 5.2 ц, p90 26 ц.`,o:["Ахлах инженерүүдийг CODEOWNERS-д нэмэх","Review SLA 24 ц","Хос програмчлал"],src:"GitLab → MR approvals, notes"}]}},
- chro:{lab:"CHRO",who:"Хүний нөөцийн захирал",focus:"Ачаалал, ур чадвар, орон тоо, карьер",secs:["dec","bonus","org","load","emp","depts"],
-  stats:()=>[["Ажилтан",TOTAL,"7 алба"],["Хэт ачаалалтай",over.length,"110%-иас дээш","r"],["Сул ачаалалтай",EMP.filter(e=>e.load<70).length,"70%-иас доош","a"],["Ажилтны урсгал","1.4%","Сарын · зорилт ≤ 1.5%","g"],["Сургалтын цаг","6.2 ц","Хүнд · зорилт ≥ 8","a"],["Орон тооны зөрүү","+1","Төслийн менежер 7 → 8"]],
-  dec:()=>[
-   {q:"Хэт ачаалалтай хүмүүсийг яаж тайлах вэ?",s:"r",m:`Төслийн удирдлагын алба-1-д <b>${pmoOver.length} хүн</b> 110%-иас дээш: ${pmoOver.slice(0,4).map(e=>e.nm.split(" ")[0]).join(", ")}${pmoOver.length>4?"…":""}. 3 сар дараалбал гүйцэтгэл, чанар буурдаг.`,o:["Ажлыг дахин хуваарилах","Нөхөн амралт","Түр туслах томилох"],src:"Jira → Worklog, Odoo 19 → Attendance"},
-   {q:"Аль чиглэлд орон тоо, сургалт хэрэгтэй вэ?",s:"a",m:`Дизайнер 2 хүн 14 төсөлд, программ менежер 1. Мобайл, ABAP чиглэлд 3+ түвшний хүн цөөн.`,o:["Дизайнер 1 орон тоо","Чиглэсэн сургалт","Pair work"],src:"Ontology: Employee → Skill"},
-   {q:"Орон тооны бүтэц бодит байдалтай таарч байна уу?",s:"a",m:`Бүтцэд "Төслийн менежер — 7" гэсэн ч <b>8 хүн</b> ажиллаж байна. Ахлах : энгийн инженер = 10 : 10.`,o:["Орон тоог 8 болгох","Нэгийг программ менежерийн туслах болгох","Хэвээр"],src:"Odoo 19 → Position vs Employee"},
-   {q:"Бонусын санг хэрхэн хуваарилах вэ?",s:"a",m:(()=>{const all=EMP.map(bon),T=sum(all,x=>x.t),B=sum(all,x=>x.b);return `Жилийн цэвэр ашгийн таамаг төлөвлөгөөний <b>${Math.round(fcAtt()*100)}%</b> → компанийн коэф. ${fc().toFixed(2)}. Урьдчилсан сан <b>${sar(B)} сая ₮</b> (зорилтын ${Math.round(B/T*100)}%). AI & IT хэлтэс алдагдалтай тул түүнд хамаарах алба доод хязгаараар (${BP.floor}) тооцогдож байна.`})(),o:["Бодлогоор нь олгох","Хэлтсийн жинг багасгаж хувь хүнийх рүү шилжүүлэх","4-р улирлын үр дүнгээр эцэслэх"],src:"Key indicator → Цэвэр ашиг (ХБГ), Metric layer → Employee KPI"},
-   {q:"Хэнийг дэвшүүлэх бэлэн байна вэ?",s:"b",m:`Энгийн инженерүүдээс KPI оноо 90+ ба ачаалал хэвийн <b>${pmos.filter(e=>e.k==="se"&&e.score>=88).length} хүн</b> ахлах түвшинд бэлэн байж болно.`,o:["Улирлын үнэлгээнд оруулах","Mentor томилох","Хүлээх"],src:"Metric layer → Employee KPI"}]},
+ chro:{lab:"CHRO",who:"Хүний нөөцийн захирал",focus:"Орон тооны төлөвлөлт, talent, цалингийн өрсөлдөх чадвар, сэтгэл ханамж, 1:1, залгамж халаа",secs:["dec","hr","bonus","load","org","emp","depts"],
+  stats:()=>[["Ажилтан (бодит)",hcF.m26,"Төлөвлөгөө "+hcF.y26p+" · 12-р сард "+hcF.f26[11],"a"],["Нээлттэй ажлын байр",openPos,"Дундаж "+Math.round(avg(TA.map(t=>t[3])))+" хоног нээлттэй"],["eNPS",(enpsAll>0?"+":"")+enpsAll,"Хариулт "+Math.round(respN/TOTAL*100)+"%",enpsAll>=20?"g":"a"],["1:1 хамрах хүрээ",ooAll+"%","Зорилт ≥ 85%","r"],["Compa-ratio",crAll.toFixed(2),"Зах зээлийн медиантай","a"],["Залгамжлагчгүй",sucGap,"Түлхүүр "+SUC.length+" албан тушаалаас","r"]],
+  dec:()=>{const ai=FIN.depts[2],lowCR=SAL.filter(s=>salOK(s)&&salCR(s)<.88),cost=lowCR.reduce((s,x)=>s+(x[4]-x[2])*x[1]*12,0),pm=PULSE[0][3];return[
+   {q:"2026 оны орон тооны төлөвлөгөөг шинэчлэх үү?",s:"a",m:`8-р сард <b>${hcF.m26} хүн</b>, төлөвлөгөө ${hcF.y26p}. Жилийн эцэст ${hcF.f26[11]} болох таамагтай. AI & IT ${ai.hc.m26} / ${ai.hc.y26p}, цалингийн зардал төлөвлөгөөний ${Math.round(FIN.bs.payroll/FIN.bs.payroll_p*100)}%, нэг ажилтны цалин ${(FIN.bs.pay_pp/1e6).toFixed(2)} сая (төл. ${(FIN.bs.pay_pp_p/1e6).toFixed(2)}).`,o:["Төлөвлөгөөг "+hcF.f26[11]+" болгож шинэчлэх","Зөвхөн түлхүүр 8 орон тоог нөхөх","Бүрэн нөхөх"],src:"Key indicator → Ажилтны тоо, Цалингийн зардал"},
+   {q:"Зах зээлээс доогуур цалинтай албан тушаалыг тэгшлэх үү?",s:"r",m:`Compa-ratio 0.88-аас доош: <b>${lowCR.map(s=>s[0]+" "+salCR(s).toFixed(2)).join(", ")}</b>. Зах зээлийн медиан хүргэхэд жилд ~<b>${cost.toFixed(0)} сая ₮</b>.`,o:["Медиан хүртэл тэгшлэх","Хадгалах урамшуулал (retention)","Үе шаттай — 2 жилд"],src:"Odoo 19 → hr.contract, цалингийн судалгаа"},
+   {q:"Төслийн удирдлагын албаны сэтгэл ханамжийг яах вэ?",s:"r",m:`eNPS <b>${PULSE[0][2]}</b>, "Ажлын ачаалал" ${pm[0]}/5, "Зорилгын тодорхой байдал" ${pm[5]}/5. Тус албанд ${pmoOver.length} хүн 110%-иас дээш ачаалалтай, 1:1 хамрах хүрээ ${OO[0][1]}%, долоо хоногт ${OO[0][3]} цаг уулзалттай.`,o:["Ачааллыг дахин хуваарилах","Уулзалтгүй өдөр (focus day)","Менежерүүдэд 1:1 заавал"],src:"Pulse судалгаа, Calendar, Jira → Worklog"},
+   {q:"Залгамжлагчгүй түлхүүр албан тушаалыг хэрхэн хамгаалах вэ?",s:"r",m:`${SUC.length} түлхүүр албан тушаалаас <b>${sucGap}</b>-д одоо бэлэн залгамжлагч алга, ${noSuc} нь 2 жилд ч бэлтгэгдэхгүй (${SUC.filter(s=>!s[1]&&!s[2]).map(s=>s[0]).join(", ")}).`,o:["Хөгжлийн төлөвлөгөө (IDP) батлах","Гаднаас нөөц хайх","Мэдлэгийг баримтжуулах"],src:"Odoo 19 → hr.employee, Talent review"},
+   {q:"Удаан нөхөгдөхгүй байгаа ажлын байрыг яах вэ?",s:"a",m:`Мобайл ${TA[0][3]} хоног, ABAP ${TA[1][3]} хоног нээлттэй. 2027 онд мобайл ${SKG[0][1]} FTE хэрэгтэй, одоо ${SKG[0][2]}. Дотоод нэр дэвшигч цөөн.`,o:["Гэрээт баг (Borrow)","Дотоод сургалт, re-skill","Цалингийн саналыг P75 болгох"],src:"Odoo 19 → hr.applicant, Skill matrix"},
+   {q:"Бонусын санг хэрхэн хуваарилах вэ?",s:"a",m:(()=>{const all=EMP.map(bon),T=sum(all,x=>x.t),B=sum(all,x=>x.b);return `Жилийн цэвэр ашгийн таамаг төлөвлөгөөний <b>${Math.round(fcAtt()*100)}%</b> → компанийн коэф. ${fc().toFixed(2)}. Урьдчилсан сан <b>${sar(B)} сая ₮</b> (зорилтын ${Math.round(B/T*100)}%).`})(),o:["Бодлогоор нь олгох","Хувь хүний жинг нэмэх","4-р улирлын үр дүнгээр эцэслэх"],src:"Key indicator → Цэвэр ашиг (ХБГ), Metric layer → Employee KPI"}]}},
  head:{lab:"Алба дарга",who:"Төслийн удирдлагын албаны дарга",focus:"Төсөл хуваарилалт, PM/BA/TL ачаалал, хоцрогдол, асуудал",secs:["dec","org","port","eng","bonus","emp","kpi","load"],
   stats:()=>[["Албаны ажилтан",pmos.length,"8 үүргийн бүлэг"],["Идэвхтэй төсөл",PROJ.length,"Программ менежер 1"],["PM-ийн дундаж төсөл",(sum(pmLoad,x=>x.c)/pmLoad.length).toFixed(1),"Дүрэм ≤ 3",pmOver.length?"a":"g"],["BA-гүй төсөл",noBA.length,"BRD эрсдэлтэй","r"],["Хугацаандаа",Math.round(avg(pmos.map(e=>e.ot)))+"%","Хувь хүний ажлаар"],["Хэт ачаалал",pmoOver.length,"110%-иас дээш",pmoOver.length?"r":"g"]],
   dec:()=>[
@@ -563,7 +632,7 @@ const col=s=>({g:"var(--green)",a:"var(--amber)",r:"var(--red)",b:"var(--blue)"}
 const sc=v=>v>=90?"g":v>=80?"b":v>=70?"a":"r";
 const D=id=>DEPTS.find(d=>d.id===id);
 const ROMAN=["I","II","III","IV","V","VI","VII","VIII","IX","X","XI"];
-const ORDER=["dec","eng","fin","budget","wc","bonus","port","org","depts","kpi","load","emp","trend","kci","src"];
+const ORDER=["dec","eng","hr","fin","budget","wc","bonus","port","org","depts","kpi","load","emp","trend","kci","src"];
 
 $("roles").innerHTML=Object.entries(ROLES).map(([k,r])=>`<button role="tab" data-r="${k}">${r.lab}</button>`).join("");
 const opts='<option value="all">Бүх алба</option>'+DEPTS.map(d=>`<option value="${d.id}">${d.name}</option>`).join("");
@@ -586,7 +655,7 @@ function render(){
   $("decTitle").textContent="Шийдвэрийн самбар — "+R0.lab;
   $("decs").innerHTML=dl.map(d=>`<div class="dec" style="--c:${col(d.s)}"><div class="top"><div class="q">${d.q}</div><span class="pill ${d.s}">${{r:"Яаралтай",a:"Анхаарах",b:"Төлөвлөх",g:"Хэвийн"}[d.s]}</span></div>
     <div class="m">${d.m}</div><h4>Шийдвэрийн сонголт</h4><div class="opts">${d.o.map(o=>`<span class="opt">${o}</span>`).join("")}</div><div class="src">Эх сурвалж: ${d.src}</div></div>`).join("");
-  layout();renderEng();renderFin();renderBudget();renderWC();renderBonus();renderPort();renderOrg();renderDepts();renderKpi();renderLoad();renderEmp();renderTrend();renderKci();renderSrc();
+  layout();renderEng();renderHR();renderFin();renderBudget();renderWC();renderBonus();renderPort();renderOrg();renderDepts();renderKpi();renderLoad();renderEmp();renderTrend();renderKci();renderSrc();
 }
 
 function finChart(el,act,plan,py){
@@ -771,6 +840,39 @@ function renderEng(){
    .map(g=>`<div class="gov"><span>${g[0]}</span><div class="bar"><i style="width:${g[1]}%;background:${col(g[1]>=90?"g":g[1]>=70?"a":"r")}"></i></div><span class="t">${g[1]}%</span></div>`).join("");
   $("contrib").innerHTML=[...ENGR].sort((a,b)=>b.mrm-a.mrm).map(e=>{const f=EP[engPer].f,rr=e.rev/e.mrm;return `<tr><td><b>${e.nm}</b></td><td class="muted">${e.role}</td><td class="mono">${e.grp}</td><td class="rt">${Math.round(e.push*f)}</td><td class="rt">${Math.max(0,Math.round(e.mrm*f))}</td><td class="rt">${Math.round(e.rev*f)}</td>
    <td class="rt"><span class="pill ${rr>=2?"b":rr>=.8?"g":"a"}">${rr.toFixed(1)}</span></td><td class="rt" style="color:${e.size>400?"var(--red-ink)":"inherit"}">${e.size}</td><td class="rt">${(e.lead/24).toFixed(1)} хоног</td></tr>`}).join("");
+}
+
+function renderHR(){
+  const k=(l,v,s,pill)=>`<div class="fk"><div class="l">${l}</div><div class="v">${v}</div><div class="c">${pill||""}<span>${s}</span></div></div>`;
+  const pl=(c,t)=>`<span class="pill ${c}">${t}</span>`;
+  $("hrKpis").innerHTML=k("Ажилтан (8-р сар)",hcF.m26,"2025: "+hcF.y25,pl("a","Төл. "+hcF.y26p))+k("Жилийн эцсийн таамаг",hcF.f26[11],"2026 төлөвлөгөө "+hcF.f26p,pl("r",(hcF.f26[11]-hcF.f26p)+" хүн"))+
+   k("Нээлттэй ажлын байр",openPos,"Дундаж "+Math.round(avg(TA.map(t=>t[3])))+" хоног",pl("a",TA.filter(t=>t[2]==="r").length+" яаралтай"))+k("Нөхөх хугацаа","41 хоног","Сүүлийн 90 хоног",pl("a","Зорилт ≤ 30"))+
+   k("eNPS",(enpsAll>0?"+":"")+enpsAll,"Хариулт "+respN+" / "+TOTAL,pl(enpsAll>=20?"g":"a","Зорилт ≥ +20"))+k("1:1 хамрах хүрээ",ooAll+"%","Сүүлийн 30 хоногт",pl("r","Зорилт ≥ 85%"))+
+   k("Compa-ratio",crAll.toFixed(2),"Жигнэсэн дундаж",pl(crAll>=.95?"g":"a","Зорилт 0.95–1.05"))+k("Залгамжлагчгүй",sucGap+" / "+SUC.length,"Түлхүүр албан тушаал",pl("r",noSuc+" нь 2 жилд ч алга"));
+  lineChart($("hcChart"),[{v:hcF.f26,c:"var(--navy)",cut:FIN.month,dots:true},{v:hcF.p26,c:"var(--amber)",d:true},{v:hcF.a25,c:"var(--faint)"}],{aria:"Орон тоо сараар",lab:MN,fmt:v=>Math.round(v),
+   legend:`<div class="flegend"><span><i style="background:var(--navy)"></i>2026 (тасархай: ХБГ)</span><span><i style="background:var(--amber);height:2px"></i>Төлөвлөгөө</span><span><i style="background:var(--faint);height:2px"></i>2025</span></div>`});
+  const off={s:"Оффис (удирдлага, санхүү, HR)",hc:Object.fromEntries(["y25","y26p","m26","f26f"].map(k=>[k,hcF[k]-FIN.depts.reduce((s,d)=>s+d.hc[k],0)]))};
+  const hr=(d,t)=>{const g=d.hc.m26-d.hc.y26p;return `<tr class="${t?"tot":""}"><td>${t?d.s:"<b>"+d.s+"</b>"}</td><td class="rt">${d.hc.y25}</td><td class="rt">${d.hc.y26p}</td><td class="rt">${d.hc.m26}</td><td class="rt">${d.hc.f26f}</td><td class="rt" style="font-weight:600;color:${g<0?"var(--amber-ink)":"var(--green-ink)"}">${g>0?"+":""}${g}</td></tr>`};
+  $("hcBody").innerHTML=[...FIN.depts,off].map(d=>hr(d)).join("")+hr({s:"Нийт",hc:hcF},true);
+  const B=FIN.bs;$("payMini").innerHTML=`<div><span>Цалингийн зардал (1–8)</span><b>${sar(B.payroll)}</b><em>Төлөвлөгөө ${sar(B.payroll_p)} · ${Math.round(B.payroll/B.payroll_p*100)}%</em></div><div><span>Нэг ажилтны цалингийн зардал</span><b>${(B.pay_pp/1e6).toFixed(2)} сая</b><em>Төлөвлөгөө ${(B.pay_pp_p/1e6).toFixed(2)} · +${Math.round((B.pay_pp/B.pay_pp_p-1)*100)}%</em></div>`;
+  $("salBody").innerHTML=SAL.map(s=>{const ok=salOK(s),cr=salCR(s),lo=s[3]*.8,hi=s[5]*1.12,X=v=>(v-lo)/(hi-lo)*100,c=cr<.88?"r":cr<.95?"a":"g",cost=Math.max(0,(s[4]-s[2])*s[1]*12);
+   return `<tr><td><b>${s[0]}</b></td><td class="rt">${s[1]}</td><td class="rt" style="font-weight:600">${ok?s[2].toFixed(1):'<span class="muted" style="font-weight:400">Нууцалсан</span>'}</td><td class="rt muted">${s[3].toFixed(1)} / ${s[4].toFixed(1)} / ${s[5].toFixed(1)}</td>
+   <td><div class="rng" title="P25 ${s[3]} · P50 ${s[4]} · P75 ${s[5]}"><div class="ln"></div><div class="iq" style="left:${X(s[3])}%;width:${X(s[5])-X(s[3])}%"></div><div class="p50" style="left:${X(s[4])}%"></div>${ok?`<div class="us" style="left:${X(s[2])}%;background:${col(c)}"></div>`:""}</div></td>
+   <td class="rt">${ok?`<span class="pill ${c}">${cr.toFixed(2)}</span>`:"—"}</td><td class="rt">${ok&&cost?cost.toFixed(0)+" сая":"—"}</td><td class="muted">${!ok?"3-аас цөөн хүн — зөвхөн HR харна":cr<.88?"Гарах эрсдэл өндөр":cr<.95?"Медианаас доош":"Өрсөлдөхүйц"}</td></tr>`}).join("");
+  $("taSub").textContent=openPos+" орон тоо, "+TA.length+" зар · дотоод нэр дэвшигчийг ур чадварын матрицаас санал болгоно";
+  $("taBody").innerHTML=TA.map(t=>`<tr><td><b>${t[0]}</b> <span class="pill ${t[2]}">${{r:"Яаралтай",a:"Дунд",b:"Бага"}[t[2]]}</span><div class="muted">${t[1]}</div></td><td class="rt" style="font-weight:600;color:${t[3]>45?"var(--red-ink)":"inherit"}">${t[3]}</td><td class="rt">${t[4]}</td><td class="rt">${t[5]}</td><td class="rt">${t[6]||"—"}</td><td class="rt">${t[8]?`<span class="pill g">${t[8]}</span>`:"—"}</td><td class="muted">${t[7]}</td></tr>`).join("");
+  $("funnel").innerHTML=FUN.map((f,i)=>`<div class="fun"><span>${f[0]}</span><div class="bar"><i style="width:${f[1]/FUN[0][1]*100}%;background:var(--navy);opacity:${1-i*.15}"></i></div><span class="t" style="text-align:right">${f[1]}${i&&i<4?` <span class="muted">${Math.round(f[1]/FUN[i-1][1]*100)}%</span>`:""}</span></div>`).join("");
+  $("srcMix").innerHTML=`<div class="split">${SRCM.map(x=>`<i style="width:${x[1]}%;background:${x[2]}">${x[1]>=12?x[1]+"%":""}</i>`).join("")}</div><div class="splitl">${SRCM.map(x=>`<span style="--c:${x[2]}">${x[0]} ${x[1]}%</span>`).join("")}</div>`;
+  $("taMini").innerHTML=`<div><span>Саналыг хүлээж авсан</span><b>78%</b><em>Татгалзсан шалтгаан: цалин 3 / 4</em></div><div><span>Шинэ ажилтны 90 хоногийн тогтвортой байдал</span><b>86%</b><em>14-өөс 2 нь гарсан</em></div>`;
+  $("pulseSub").textContent=`9-р сар · 1–5 оноо · ${respN} хариулт (${Math.round(respN/TOTAL*100)}%) · 5-аас доош хариулттай бүлгийг нууна`;
+  $("hm").innerHTML=`<div class="hm" style="grid-template-columns:150px repeat(${DIMS.length},minmax(62px,1fr)) 58px;min-width:620px"><div class="hh"></div>${DIMS.map(d=>`<div class="hh">${d}</div>`).join("")}<div class="hh">eNPS</div>`+
+   PULSE.map(p=>`<div class="rl">${D(p[0]).name}<div class="muted" style="font-weight:400">n = ${p[1]}</div></div>`+(p[3]?p[3].map(v=>`<div class="${v>=4?"s4":v>=3.5?"s3":v>=3?"s2":"s1"}">${v.toFixed(1)}</div>`).join("")+`<div class="${p[2]>=20?"s4":p[2]>=10?"s3":p[2]>=0?"s2":"s1"}">${p[2]>0?"+":""}${p[2]}</div>`:`<div class="mk" style="grid-column:span ${DIMS.length+1}">Хариулт 5-аас цөөн — нууцлалын үүднээс нуусан</div>`)).join("")+`</div>`;
+  lineChart($("enpsChart"),[{v:ENPS.map(e=>e[1]),c:"var(--navy)",dots:true}],{aria:"eNPS чиг хандлага",lab:ENPS.map(e=>e[0]),fmt:v=>Math.round(v),min:-10,max:40,hline:20,legend:`<div class="flegend"><span><i style="background:var(--navy)"></i>Байгууллагын eNPS</span><span><i style="background:var(--red);height:2px"></i>Зорилт +20</span></div>`});
+  $("ooBody").innerHTML=OO.map(o=>`<tr><td><b>${D(o[0]).name}</b></td><td><div class="barcell"><div class="bar"><i style="width:${o[1]}%;background:${col(o[1]>=85?"g":o[1]>=70?"a":"r")}"></i></div><b>${o[1]}%</b></div></td><td class="rt">${o[2]} хоног</td><td class="rt" style="color:${o[3]>12?"var(--red-ink)":"inherit"};font-weight:${o[3]>12?600:400}">${o[3]} ц</td><td class="rt">${o[4]}%</td><td class="rt">${o[5]}%</td></tr>`).join("");
+  $("ooNote").innerHTML=`<b>Ажиглалт:</b> уулзалтын ачаалал өндөр (12+ ц/7 хоног) албад 1:1-ээ хамгийн бага хийж, "Ажлын ачаалал"-ын оноо хамгийн доогуур байна. Уулзалтгүй өдөр болон 1:1-ийг менежерийн KPI-д оруулах нь эхний алхам.`;
+  $("sucBody").innerHTML=SUC.map(s=>`<tr><td><b>${s[0]}</b></td><td class="rt">${s[1]||"—"}</td><td class="rt">${s[2]||"—"}</td><td><span class="pill ${s[3]}">${s[3]==="r"?"Өндөр":"Дунд"}</span></td><td>${!s[1]&&!s[2]?'<span class="pill r">Залгамжлагчгүй</span>':!s[1]?'<span class="pill a">Бэлтгэгдэж буй</span>':'<span class="pill g">Бэлэн</span>'}</td></tr>`).join("");
+  const mx=Math.max(...SKG.map(s=>s[1]));
+  $("skillGap").innerHTML=`<div class="sk muted" style="margin-top:0"><span></span><span>Одоогийн / шаардлагатай FTE</span><span style="text-align:right">Дутагдал</span><span>Арга</span></div>`+SKG.map(s=>{const g=s[1]-s[2],r=s[2]/s[1];return `<div class="sk"><span><b>${s[0]}</b></span><div class="dbl"><i style="width:${s[1]/mx*100}%;background:var(--line)"></i><i style="width:${s[2]/mx*100}%;background:${col(r>=.8?"g":r>=.5?"a":"r")}"></i></div><span style="text-align:right;font-weight:600">${s[2]} / ${s[1]} <span class="${g>2?"neg":""}">(−${g})</span></span><span><span class="pill ${s[3]==="Build"?"g":s[3]==="Buy"?"b":"a"}">${s[3]}</span></span></div>`}).join("");
 }
 function renderPort(){
   const cfo=role==="cfo";
