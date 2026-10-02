@@ -1,0 +1,866 @@
+<!DOCTYPE html>
+<html lang="mn">
+<head>
+<meta charset="utf-8">
+<meta name="color-scheme" content="light">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Нэгдсэн KPI хяналтын самбар</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f5f7fb;--card:#fff;--soft:#f3f5f9;--line:#e5e8ef;--ink:#141a26;--mute:#667085;--faint:#98a2b3;
+  --navy:#1f3d73;--blue:#3c6fc2;--blue-bg:#e8effa;--green:#2e9b62;--green-bg:#e6f4ec;--teal:#0f6e6a;--teal-bg:#e2f4f2;--teal-ink:#0b534f;
+  --amber:#d1931b;--amber-bg:#fdf3dc;--red:#d24848;--red-bg:#fbe9e9;--amber-ink:#8a5a06;--red-ink:#9b2c2c;--green-ink:#1d6b42;--blue-ink:#1f4f9a;
+  color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.45 Inter,"Segoe UI",Roboto,Arial,sans-serif}
+.wrap{max-width:1200px;margin:0 auto;padding:28px 20px 48px}
+header{display:flex;gap:16px;align-items:center;justify-content:space-between;flex-wrap:wrap;margin-bottom:14px}
+.brand{display:flex;gap:14px;align-items:center}
+.logo{width:44px;height:44px;border-radius:10px;background:var(--navy);display:grid;place-items:center;color:#fff}
+h1{font-size:24px;margin:0;font-weight:700;letter-spacing:-.01em}
+.meta{color:var(--mute);font-size:12.5px;margin-top:2px;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.tag{background:var(--soft);border:1px solid var(--line);border-radius:999px;padding:1px 9px;font-size:11.5px}
+.controls{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.btn,select{font:inherit;font-size:13px;font-weight:600;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:8px;padding:8px 14px;cursor:pointer}
+.btn.on{background:var(--navy);color:#fff;border-color:var(--navy)}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:10px;background:var(--card);padding:3px;gap:2px;flex-wrap:wrap}
+.seg button{font:inherit;font-size:13px;font-weight:600;border:0;background:none;color:var(--mute);padding:7px 13px;border-radius:7px;cursor:pointer}
+.seg button.on{background:var(--navy);color:#fff}
+.btn:focus-visible,select:focus-visible,.seg button:focus-visible,tr:focus-visible,input:focus-visible,.person:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+.rolebar{display:flex;justify-content:space-between;gap:14px;align-items:center;flex-wrap:wrap;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 16px;margin-bottom:14px}
+.rolebar .who b{font-size:15px}
+.rolebar .who span{display:block;color:var(--mute);font-size:12.5px}
+.chk{font-size:12.5px;color:var(--mute);display:flex;gap:6px;align-items:center;cursor:pointer}
+.alert{background:var(--red-bg);border:1px solid color-mix(in srgb,var(--red) 30%,transparent);color:var(--red-ink);border-radius:10px;padding:11px 16px;margin-bottom:14px;font-size:13px}
+.alert b{font-weight:600}
+.stats{display:grid;grid-template-columns:repeat(6,1fr);gap:12px;margin-bottom:16px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:13px 14px}
+.stat .l{font-size:11px;color:var(--mute);font-weight:600;letter-spacing:.02em}
+.stat .v{font-size:22px;font-weight:700;margin:3px 0 1px}
+.stat .v.r,.stat .v.a,.stat .v.g{background:none}.stat .v.r{color:var(--red-ink)}.stat .v.a{color:var(--amber-ink)}.stat .v.g{color:var(--green-ink)}
+.stat .s{font-size:11.5px;color:var(--mute)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px 18px 16px;margin-bottom:16px}
+.ch{display:flex;gap:12px;align-items:flex-start;margin-bottom:14px}
+.num{flex:none;min-width:28px;height:28px;padding:0 5px;border-radius:7px;background:var(--navy);color:#fff;display:grid;place-items:center;font-size:11px;font-weight:700}
+.ch h2{font-size:16px;margin:0;font-weight:600}
+.ch p{margin:1px 0 0;color:var(--mute);font-size:12px}
+.tw{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{text-align:left;color:var(--mute);font-weight:600;font-size:11.5px;padding:8px;border-bottom:1px solid var(--line);white-space:nowrap}
+td{padding:10px 8px;border-bottom:1px solid var(--line);vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tbody tr.click{cursor:pointer}
+tbody tr.click:hover,tbody tr.sel{background:var(--soft)}
+.pill{display:inline-flex;align-items:center;gap:5px;border-radius:999px;padding:2px 9px;font-size:11.5px;font-weight:600;white-space:nowrap}
+.pill:before{content:"";width:5px;height:5px;border-radius:50%;background:currentColor}
+.g{background:var(--green-bg);color:var(--green-ink)}.a{background:var(--amber-bg);color:var(--amber-ink)}
+.r{background:var(--red-bg);color:var(--red-ink)}.b{background:var(--blue-bg);color:var(--blue-ink)}
+.chip{display:inline-block;background:var(--soft);border:1px solid var(--line);border-radius:6px;padding:1px 7px;font-size:11.5px;margin:2px 3px 2px 0;color:var(--ink)}
+.bar{height:7px;background:var(--soft);border-radius:99px;overflow:hidden;min-width:70px}
+.bar i{display:block;height:100%;border-radius:99px}
+.barcell{display:flex;align-items:center;gap:10px}.barcell .bar{flex:1}.barcell b{min-width:42px;text-align:right;font-weight:700}
+.decs{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.dec{border:1px solid var(--line);border-radius:10px;padding:14px 15px;border-left:4px solid var(--c,var(--line))}
+.dec .top{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
+.dec .q{font-weight:600;font-size:14px}
+.dec .m{font-size:13px;margin:8px 0 10px;color:var(--ink)}
+.dec .m b{font-weight:700}
+.dec h4{margin:0 0 5px;font-size:10.5px;color:var(--blue-ink);letter-spacing:.04em;font-weight:700}
+.opts{display:flex;flex-wrap:wrap;gap:6px}
+.opt{border:1px solid var(--line);border-radius:7px;padding:4px 9px;font-size:12px;background:var(--soft)}
+.dec .src{font-size:11px;color:var(--faint);margin-top:10px}
+.kpis{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:10px}
+.kpi{border:1px solid var(--line);border-radius:10px;padding:12px 13px}
+.kpi .top{display:flex;justify-content:space-between;gap:8px;align-items:flex-start}
+.kpi .nm{font-weight:600;font-size:13px}
+.kpi .src{font-size:11px;color:var(--faint);margin-top:1px}
+.kpi .val{font-size:20px;font-weight:700;margin:8px 0 6px}
+.kpi .tg{font-size:11.5px;color:var(--mute);margin-top:6px}
+.mini{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px}
+.mini div{background:var(--soft);border-radius:8px;padding:10px 12px}
+.mini span{display:block;font-size:11px;color:var(--mute)}
+.mini b{font-size:18px}
+.mini .gb{background:var(--green-bg)}.mini .gb b{color:var(--green-ink)}
+.mini .ab{background:var(--amber-bg)}.mini .ab b{color:var(--amber-ink)}
+.mini .rb{background:var(--red-bg)}.mini .rb b{color:var(--red-ink)}
+.org{display:flex;gap:10px;overflow-x:auto;padding-bottom:6px}
+.col{flex:0 0 190px;display:flex;flex-direction:column;gap:6px}
+.colh{background:var(--teal-bg);color:var(--teal-ink);border-radius:8px;padding:9px 10px;min-height:62px}
+.colh b{display:block;font-size:13px;line-height:1.25}
+.colh span{font-size:11.5px}
+.colh span.warn{color:var(--amber-ink);font-weight:600}
+.person{font:inherit;text-align:left;border:1px dashed color-mix(in srgb,var(--teal) 45%,transparent);background:var(--card);color:var(--ink);border-radius:7px;padding:7px 9px;cursor:pointer;display:flex;justify-content:space-between;gap:6px;align-items:center}
+.person:hover,.person.sel{background:var(--teal-bg);border-style:solid}
+.person .nm{font-size:12.5px;font-weight:500}
+.person small{display:block;color:var(--mute);font-size:11px}
+.dot{flex:none;width:9px;height:9px;border-radius:50%}
+.detail{margin-top:14px;border:1px solid var(--line);border-radius:10px;padding:14px 16px;display:grid;grid-template-columns:1.1fr 1fr;gap:18px}
+.detail h3{margin:0;font-size:16px}
+.detail .sub{color:var(--mute);font-size:12.5px;margin-bottom:8px}
+.detail .nums{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:10px}
+.detail .nums div{background:var(--soft);border-radius:8px;padding:8px 10px}
+.detail .nums span{display:block;font-size:11px;color:var(--mute)}
+.detail .nums b{font-size:16px}
+.detail ul{margin:6px 0 0;padding-left:18px;font-size:12.5px}
+.detail li{margin:3px 0}
+.obs{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:14px}
+.ob{border-radius:9px;padding:10px 12px;font-size:12.5px}
+.ob b{display:block;margin-bottom:2px}
+.lrow{display:grid;grid-template-columns:170px 1fr 54px;gap:10px;align-items:center;margin:9px 0;font-size:12.5px}
+.lrow .n{font-weight:600}.lrow .t{text-align:right;color:var(--mute)}
+.stack{display:flex;height:16px;border-radius:5px;overflow:hidden;background:var(--soft)}
+.stack i{display:block;height:100%}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:11.5px;color:var(--mute);margin-bottom:12px}
+.legend span:before{content:"";display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;vertical-align:-1px;background:var(--c)}
+.kci{margin:11px 0}
+.kci .h{display:flex;justify-content:space-between;font-size:12.5px;margin-bottom:5px;gap:8px}
+.search{display:flex;gap:8px;align-items:center;justify-content:space-between;margin-bottom:8px;flex-wrap:wrap}
+.search input,.search select{font:inherit;font-size:13px;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:8px;padding:7px 11px}
+.search input{min-width:220px}
+.muted{color:var(--mute);font-size:12px}
+.chart svg{width:100%;height:auto;display:block}
+.foot{color:var(--faint);font-size:11.5px;text-align:center;margin-top:8px}
+.ch .seg{margin-left:auto}
+.fkpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px}
+.fk{border:1px solid var(--line);border-radius:10px;padding:12px 13px}
+.fk .l{font-size:11.5px;color:var(--mute);font-weight:600}
+.fk .v{font-size:21px;font-weight:700;margin:4px 0 6px;white-space:nowrap}
+.fk .v small{font-size:12px;color:var(--mute);font-weight:500}
+.fk .c{display:flex;justify-content:space-between;gap:6px;align-items:center;font-size:11.5px;color:var(--mute);flex-wrap:wrap}
+.fgrid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
+.fbox{border:1px solid var(--line);border-radius:10px;padding:13px 14px}
+.fbox h3{margin:0;font-size:13.5px;font-weight:600}
+.fbox .h3s{font-size:11.5px;color:var(--mute);margin:1px 0 8px}
+.flegend{display:flex;gap:12px;flex-wrap:wrap;font-size:11px;color:var(--mute);margin-top:6px}
+.flegend i{display:inline-block;width:14px;height:8px;border-radius:2px;margin-right:4px;vertical-align:0}
+.urow{display:grid;grid-template-columns:120px 1fr 92px 84px;gap:10px;align-items:center;font-size:12.5px;padding:5px 0}
+.ugrp{font-size:11.5px;color:var(--mute);font-weight:600;margin:10px 0 2px}
+.ugrp:first-child{margin-top:0}
+.bsg{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.bsg div{background:var(--soft);border-radius:8px;padding:9px 11px}
+.bsg span{display:block;font-size:11px;color:var(--mute)}
+.bsg b{font-size:16px}
+.bsg em{display:block;font-style:normal;font-size:11px;color:var(--mute);margin-top:1px}
+td.rt,th.rt{text-align:right;white-space:nowrap}
+tr.tot td{font-weight:700;background:var(--soft)}
+.neg{color:var(--red-ink)}
+@media (max-width:980px){.fkpis{grid-template-columns:1fr 1fr}.fgrid{grid-template-columns:1fr}.urow{grid-template-columns:100px 1fr 80px 70px}}
+.budrow .bar{position:relative;overflow:visible}
+.budrow .bar u{position:absolute;top:-3px;bottom:-3px;width:2px;background:var(--ink);opacity:.5}
+.params{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:14px}
+.params label{background:var(--soft);border-radius:8px;padding:10px 12px;font-size:12px;color:var(--mute);display:block}
+.params label b{color:var(--ink);font-size:14px;float:right}
+.params input{width:100%;margin-top:6px;accent-color:var(--navy)}
+.formula{font-size:12.5px;background:var(--soft);border-radius:8px;padding:10px 12px;margin-top:10px;line-height:1.7}
+.formula b{font-size:14px}
+.split{display:flex;height:22px;border-radius:6px;overflow:hidden;margin:6px 0 4px}
+.split i{display:flex;align-items:center;justify-content:center;font-style:normal;font-size:11px;color:#fff;font-weight:600;white-space:nowrap;overflow:hidden}
+.splitl{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:11.5px;color:var(--mute)}
+.splitl span:before{content:"";display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:5px;background:var(--c)}
+.note{font-size:12px;color:var(--amber-ink);background:var(--amber-bg);border-radius:8px;padding:9px 12px;margin-top:10px}
+.dora{display:grid;gap:12px}
+.dr{display:grid;grid-template-columns:150px 1fr 74px;gap:12px;align-items:center}
+.dr .nm{font-size:12.5px;font-weight:600}.dr .nm small{display:block;color:var(--mute);font-weight:400;font-size:11px}
+.dr .val{font-size:16px;font-weight:700;text-align:right}
+.band{display:grid;grid-template-columns:repeat(4,1fr);gap:3px;position:relative}
+.band span{height:8px;border-radius:3px;background:var(--soft)}
+.band span.on{background:var(--c)}
+.band em{display:flex;justify-content:space-between;grid-column:1/-1;font-style:normal;font-size:10.5px;color:var(--faint)}
+.lv{font-size:11px;font-weight:700;padding:2px 8px;border-radius:999px}
+.lv.elite{background:var(--green-bg);color:var(--green-ink)}.lv.high{background:var(--blue-bg);color:var(--blue-ink)}.lv.medium{background:var(--amber-bg);color:var(--amber-ink)}.lv.low{background:var(--red-bg);color:var(--red-ink)}
+.mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:12px}
+.sev{display:inline-block;min-width:26px;text-align:center;border-radius:5px;padding:1px 5px;font-size:11.5px;font-weight:700}
+.sev.c{background:var(--red);color:#fff}.sev.h{background:var(--red-bg);color:var(--red-ink)}.sev.m{background:var(--amber-bg);color:var(--amber-ink)}.sev.l{background:var(--soft);color:var(--mute)}.sev.z{background:none;color:var(--faint);font-weight:400}
+.gov{display:grid;grid-template-columns:170px 1fr 48px;gap:10px;align-items:center;font-size:12.5px;margin:8px 0}
+.gov .t{text-align:right;font-weight:600}
+@media (max-width:980px){.dr{grid-template-columns:110px 1fr 64px}.gov{grid-template-columns:120px 1fr 44px}}
+@media (max-width:980px){.params{grid-template-columns:1fr}}
+@media (max-width:980px){.stats{grid-template-columns:repeat(3,1fr)}.decs,.detail,.obs{grid-template-columns:1fr}.mini{grid-template-columns:1fr 1fr}.detail .nums{grid-template-columns:repeat(3,1fr)}}
+@media (max-width:560px){.stats{grid-template-columns:repeat(2,1fr)}h1{font-size:20px}.lrow{grid-template-columns:110px 1fr 48px}}
+@media print{.controls,.rolebar .chk{display:none}body{background:#fff}.card,.stat,.dec{break-inside:avoid}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <div class="brand">
+    <div class="logo" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M3 19l6-10 4 6 3-4 5 8z"/></svg></div>
+    <div>
+      <h1>Нэгдсэн KPI хяналтын самбар</h1>
+      <div class="meta"><span id="metaText"></span><span class="tag">Санхүү: 8-р сарын тайлан · бусад үзүүлэлт: жишээ</span></div>
+    </div>
+  </div>
+  <div class="controls">
+    <button class="btn on" data-p="m">Сар</button>
+    <button class="btn" data-p="q">Улирал</button>
+    <button class="btn" data-p="y">Жил</button>
+    <button class="btn" onclick="window.print()">Хэвлэх</button>
+  </div>
+</header>
+
+<div class="rolebar">
+  <div class="seg" id="roles" role="tablist" aria-label="Удирдлагын харагдац"></div>
+  <div class="who" id="who"></div>
+  <label class="chk"><input type="checkbox" id="showAll"> Бүх хэсгийг харуулах</label>
+</div>
+
+<div class="alert" id="alert"></div>
+<div class="stats" id="stats"></div>
+
+<div id="sections">
+<section class="card" data-s="dec">
+  <div class="ch"><div class="num"></div><div><h2 id="decTitle">Шийдвэрийн самбар</h2><p>Асуулт → хэмжүүр → дохио → шийдвэрийн сонголт. Босго давахад тухайн удирдлагад мэдэгдэнэ</p></div></div>
+  <div class="decs" id="decs"></div>
+</section>
+
+<section class="card" data-s="fin">
+  <div class="ch"><div class="num"></div><div><h2>Санхүүгийн үзүүлэлт — Таван Богд Тек</h2><p id="finSub"></p></div>
+    <div class="seg" id="finMode" role="tablist" aria-label="Санхүүгийн тайлант үе"><button data-f="m" class="on">8-р сар</button><button data-f="y">Өссөн дүн</button><button data-f="f">Жилийн таамаг</button></div></div>
+  <div class="fkpis" id="finKpis"></div>
+  <div class="fgrid">
+    <div class="fbox"><h3>Борлуулалт, сараар</h3><div class="h3s">сая ₮ · 9–12 сар хүлээгдэж буй гүйцэтгэл (ХБГ)</div><div class="chart" id="chRev"></div></div>
+    <div class="fbox"><h3>Цэвэр ашиг, сараар</h3><div class="h3s">сая ₮ · 9–12 сар ХБГ</div><div class="chart" id="chNp"></div></div>
+  </div>
+  <div class="fbox" style="margin-bottom:16px"><h3>Хэлтсийн ашиг, алдагдал</h3><div class="h3s" id="finDeptSub"></div>
+    <div class="tw"><table><thead><tr><th>Хэлтэс</th><th class="rt">Борлуулалт</th><th>Төлөвлөгөөнөөс</th><th class="rt">Нийт ашиг</th><th class="rt">Ахиуц ашиг</th><th class="rt">Цэвэр ашиг</th><th>Төлөвлөгөөнөөс</th><th class="rt">Цэвэр маржин</th><th class="rt">Ажилтан</th><th class="rt">Сарын борлуулалт / ажилтан</th></tr></thead><tbody id="finDept"></tbody></table></div></div>
+  <div class="fgrid">
+    <div class="fbox"><h3>Бүтээгдэхүүн, чиглэлээр</h3><div class="h3s">Борлуулалт ба цэвэр ашиг, сая ₮</div><div id="finUnits"></div></div>
+    <div class="fbox"><h3>Баланс ба эргэлтийн хөрөнгө</h3><div class="h3s">8-р сарын эцсийн байдлаар, сая ₮</div><div class="bsg" id="finBs"></div></div>
+  </div>
+  <div class="obs" id="finAlerts" style="margin-top:0"></div>
+  <div class="muted" style="margin-top:10px">Эх сурвалж: Monthly report TBTech 2026 v2.xlsm (Санхүүгийн үзүүлэлт — Key indicator). Odoo 19 санхүүгийн модультай холбогдсоны дараа автоматаар шинэчлэгдэнэ.</div>
+</section>
+
+<section class="card" data-s="budget">
+  <div class="ch"><div class="num"></div><div><h2>Жилийн төсөв ба гүйцэтгэл</h2><p>2026 оны батлагдсан төсөв, 1–8 сарын гүйцэтгэл, жилийн таамаг · сая ₮ · босоо шугам: жилийн 67% өнгөрсөн</p></div></div>
+  <div class="mini" id="budMini"></div>
+  <div class="tw"><table><thead><tr><th>Төсвийн мөр</th><th class="rt">Жилийн төсөв</th><th class="rt">1–8 төсөв</th><th class="rt">1–8 гүйцэтгэл</th><th>Гүйцэтгэл</th><th style="min-width:150px">Жилийн төсвөөс ашигласан</th><th class="rt">Жилийн таамаг</th><th class="rt">Таамаг − төсөв</th></tr></thead><tbody id="budBody"></tbody></table></div>
+  <div class="fgrid" style="margin-top:16px;margin-bottom:0">
+    <div class="fbox"><h3>Хуримтлагдсан цэвэр ашиг</h3><div class="h3s">сая ₮ · 2026 гүйцэтгэл + ХБГ, төсөв, 2025</div><div class="chart" id="chCum"></div></div>
+    <div class="fbox"><h3>Хэлтсийн жилийн төсөв ба таамаг</h3><div class="h3s">Борлуулалт ба цэвэр ашиг, сая ₮</div><div class="tw"><table><thead><tr><th>Хэлтэс</th><th class="rt">Борлуулалт төсөв</th><th class="rt">Таамаг</th><th class="rt">Цэвэр ашиг төсөв</th><th class="rt">Таамаг</th><th>Биелэлт</th></tr></thead><tbody id="budDept"></tbody></table></div></div>
+  </div>
+</section>
+
+<section class="card" data-s="wc">
+  <div class="ch"><div class="num"></div><div><h2>Мөнгө, авлага, өглөг</h2><p>Эргэлтийн капитал ба мөнгөний мөчлөг · 8-р сарын эцсийн байдлаар, сая ₮</p></div></div>
+  <div class="mini" id="wcMini"></div>
+  <div class="fgrid">
+    <div class="fbox"><h3>Авлагын бүтэц</h3><div class="h3s" id="arSub"></div><div id="arSplit"></div>
+      <h3 style="margin-top:16px">Авлагын насжилт</h3><div class="h3s">Жишээ хуваарилалт — Odoo 19 account.move-оос бодитоор тооцно</div><div id="arAging"></div></div>
+    <div class="fbox"><h3>Өглөг ба урьдчилгаа</h3><div class="h3s" id="apSub"></div><div id="apSplit"></div>
+      <h3 style="margin-top:16px">Мөнгөний мөчлөг (CCC)</h3><div class="h3s">Авлагын хоног + нөөцийн хоног − өглөгийн хоног</div><div id="ccc"></div></div>
+  </div>
+  <div class="note" id="cashNote"></div>
+</section>
+
+<section class="card" data-s="bonus">
+  <div class="ch"><div class="num"></div><div><h2>Бонусын урьдчилсан тооцоо</h2><p>Компани × хэлтэс × хувь хүний коэффициент. Хувь хүний KPI-г 9 сарын чиг хандлагаар жилийн эцэс хүртэл таамаглана</p></div></div>
+  <div class="params">
+    <label>Бонусын зорилт <b id="pMonthsV"></b><input type="range" id="pMonths" min="0.5" max="3" step="0.25" value="1.5"></label>
+    <label>Компанийн бонусын босго (цэвэр ашгийн биелэлт) <b id="pThrV"></b><input type="range" id="pThr" min="50" max="95" step="5" value="70"></label>
+    <label>Хэлтсийн коэффициентын доод хязгаар <b id="pFloorV"></b><input type="range" id="pFloor" min="0" max="1" step="0.1" value="0.5"></label>
+  </div>
+  <div class="mini" id="bonMini"></div>
+  <div class="fgrid">
+    <div class="fbox"><h3>Хэлтсээр бонусын сан</h3><div class="h3s">Зорилтот ба урьдчилсан сан, сая ₮</div><div class="tw"><table><thead><tr><th>Алба</th><th>Санхүүгийн хэлтэс</th><th class="rt">Хэлтсийн коэф.</th><th class="rt">Ажилтан</th><th class="rt">Зорилт</th><th class="rt">Урьдчилсан</th></tr></thead><tbody id="bonDept"></tbody></table></div></div>
+    <div class="fbox"><h3 id="bonPName"></h3><div class="h3s" id="bonPSub"></div><div class="chart" id="bonSpark"></div><div class="formula" id="bonFormula"></div></div>
+  </div>
+  <div class="search"><input id="bq" type="search" placeholder="Ажилтан хайх" aria-label="Бонус — ажилтан хайх"><select id="bDept" aria-label="Албаар шүүх"></select><span class="muted" id="bCount"></span></div>
+  <div class="tw"><table><thead><tr><th>Ажилтан</th><th>Алба</th><th class="rt">Одоогийн KPI</th><th class="rt">Жилийн эцсийн таамаг</th><th>KPI ≥ 85 магадлал</th><th class="rt">Хувь хүний коэф.</th><th class="rt">Урьдчилсан бонус</th></tr></thead><tbody id="bonBody"></tbody></table></div>
+  <div style="text-align:center;margin-top:10px"><button class="btn" id="bMore">Цааш харах</button></div>
+  <div class="muted" style="margin-top:8px">Цалин ба бонусын бодлого жишээ. Санхүүгийн коэффициент TBTech-ийн жилийн цэвэр ашгийн таамгаас бодитоор тооцогдоно.</div>
+</section>
+
+<section class="card" data-s="port">
+  <div class="ch"><div class="num"></div><div><h2>Төслийн портфель</h2><p>Хуваарийн (SPI) ба зардлын (CPI) гүйцэтгэл, баг, эрсдэл — нэг дор</p></div></div>
+  <div class="mini" id="portMini"></div>
+  <div class="tw"><table><thead><tr><th>Төсөл</th><th>Захиалагч</th><th>Төслийн менежер</th><th>BA</th><th>Tech lead</th><th>Үе шат</th><th>Гүйцэтгэл / хугацаа</th><th>SPI</th><th>Төсөв (сая ₮)</th><th>CPI</th><th>Таамаг зөрүү</th></tr></thead><tbody id="portBody"></tbody></table></div>
+</section>
+
+<section class="card" data-s="eng">
+  <div class="ch"><div class="num"></div><div><h2>Инженерийн гүйцэтгэл — GitLab Ultimate</h2><p>Deploy, push, merge request, repository, pipeline, аюулгүй байдал — DORA жишигтэй харьцуулсан</p></div>
+    <div class="seg" id="engPer" role="tablist" aria-label="Хугацаа"><button data-e="7">7 хоног</button><button data-e="30" class="on">30 хоног</button><button data-e="90">90 хоног</button></div></div>
+  <div class="fkpis" id="engKpis"></div>
+  <div class="fgrid">
+    <div class="fbox"><h3>DORA 4 хэмжүүр</h3><div class="h3s">Бүх production deploy · DORA State of DevOps жишгээр</div><div class="dora" id="dora"></div></div>
+    <div class="fbox"><h3>7 хоног тутмын урсгал</h3><div class="h3s">Merge хийсэн MR ба production deploy, сүүлийн 12 долоо хоног</div><div class="chart" id="engAct"></div></div>
+  </div>
+  <div class="fbox" style="margin-bottom:16px"><h3>Repository бүлгүүд</h3><div class="h3s" id="repoSub"></div>
+    <div class="tw"><table><thead><tr><th>Бүлэг</th><th>Tech lead</th><th class="rt">Repo</th><th class="rt">Шинэ</th><th class="rt">Push</th><th class="rt">MR merged / нээгдсэн</th><th class="rt">Deploy</th><th class="rt">Pipeline</th><th class="rt">Coverage</th><th>Vuln C / H</th><th class="rt">Lead time</th><th class="rt">CFR</th><th>DORA</th></tr></thead><tbody id="repoBody"></tbody></table></div></div>
+  <div class="fgrid">
+    <div class="fbox"><h3>Merge request урсгал</h3><div class="h3s">Код хянах хурд ба хэмжээ</div><div class="bsg" id="mrFlow"></div></div>
+    <div class="fbox"><h3>CI/CD pipeline ба runner</h3><div class="h3s" id="pipeSub"></div><div class="bsg" id="pipe"></div><div style="margin-top:12px"><div class="h3s" style="margin-bottom:0">Амжилтгүй pipeline, үе шатаар</div><div id="pipeFail"></div></div></div>
+  </div>
+  <div class="fgrid">
+    <div class="fbox"><h3>Аюулгүй байдлын скан</h3><div class="h3s">Нээлттэй эмзэг байдал, сканнераар · Critical / High / Medium / Low</div>
+      <div class="tw"><table><thead><tr><th>Сканнер</th><th class="rt">C</th><th class="rt">H</th><th class="rt">M</th><th class="rt">L</th><th class="rt">Засах дундаж</th></tr></thead><tbody id="secBody"></tbody></table></div></div>
+    <div class="fbox"><h3>Repository засаглал</h3><div class="h3s">Бүх repo-оос стандарт хангасан хувь (SDLC VOL 02)</div><div id="gov"></div></div>
+  </div>
+  <div class="fbox"><h3>Хувь нэмэр оруулагчид</h3><div class="h3s">Tech lead ба инженерүүд · review ачаалал, MR хэмжээ, lead time. Commit-ийн тоогоор хүнийг эрэмбэлэхгүй — багийн урсгалыг харах зорилготой</div>
+    <div class="tw"><table><thead><tr><th>Инженер</th><th>Үүрэг</th><th>Үндсэн бүлэг</th><th class="rt">Push</th><th class="rt">MR merged</th><th class="rt">Review хийсэн</th><th class="rt">Review / MR</th><th class="rt">MR хэмжээ (медиан)</th><th class="rt">Lead time</th></tr></thead><tbody id="contrib"></tbody></table></div></div>
+  <div class="muted" style="margin-top:10px">Жишээ өгөгдөл. Бодит эх сурвалж: GitLab REST/GraphQL — <span class="mono">/projects</span>, <span class="mono">/events?action=pushed</span>, <span class="mono">/merge_requests</span>, <span class="mono">/deployments</span>, <span class="mono">/dora/metrics</span>, <span class="mono">/vulnerabilities</span>, <span class="mono">/ci/runners</span> → lakehouse → ontology (Repository, MergeRequest, Deployment, Vulnerability).</div>
+</section>
+
+<section class="card" data-s="org">
+  <div class="ch"><div class="num"></div><div><h2>Төслийн удирдлагын алба-1 — бүтэц ба ачаалал</h2><p>Үүргийн бүлэг, орон тоо ба бодит хүн, ачаалал (цэг: ногоон хэвийн, шар өндөр, улаан хэт). Хүн дээр дарж дэлгэрэнгүйг харна</p></div></div>
+  <div class="org" id="org"></div>
+  <div class="detail" id="detail"></div>
+  <div class="obs" id="obs"></div>
+</section>
+
+<section class="card" data-s="depts">
+  <div class="ch"><div class="num"></div><div><h2>Албадын KPI оноо</h2><p>Алба тус бүрийн KPI биелэлт ба ачаалал — мөрийг дарж KPI дэлгэрэнгүйг шүүнэ</p></div></div>
+  <div class="tw"><table><thead><tr><th>Алба</th><th>Ажилтан</th><th>KPI оноо</th><th>Ногоон</th><th>Шар</th><th>Улаан</th><th>Дундаж ачаалал</th><th>Сараас</th></tr></thead><tbody id="deptBody"></tbody></table></div>
+</section>
+
+<section class="card" data-s="kpi">
+  <div class="ch"><div class="num"></div><div><h2 id="kpiTitle">KPI дэлгэрэнгүй</h2><p>Бодит гүйцэтгэл ба зорилт, эх сурвалж систем — ontology-н нэг тодорхойлолтоос</p></div></div>
+  <div class="search"><select id="dept" aria-label="Алба сонгох"></select><span class="muted" id="kpiCount"></span></div>
+  <div class="kpis" id="kpiGrid"></div>
+</section>
+
+<section class="card" data-s="load">
+  <div class="ch"><div class="num"></div><div><h2>Ачааллын тархалт</h2><p>Цагийн ашиглалт (100% = 160 ц/сар), алба тус бүрээр</p></div></div>
+  <div class="legend"><span style="--c:var(--amber)">&lt; 70% сул</span><span style="--c:var(--blue)">70–100% хэвийн</span><span style="--c:var(--navy)">100–110% өндөр</span><span style="--c:var(--red)">&gt; 110% хэт</span></div>
+  <div id="loadRows"></div>
+</section>
+
+<section class="card" data-s="emp">
+  <div class="ch"><div class="num"></div><div><h2>Ажилтан бүрийн гүйцэтгэл</h2><p>Хуваарилсан ба шийдсэн ажил, хугацаандаа, ачаалал, хувь хүний KPI оноо</p></div></div>
+  <div class="search">
+    <input id="q" type="search" placeholder="Нэр, албан тушаалаар хайх" aria-label="Ажилтан хайх">
+    <select id="empDept" aria-label="Албаар шүүх"></select>
+    <span class="muted" id="empCount"></span>
+  </div>
+  <div class="tw"><table><thead><tr><th>Ажилтан</th><th>Албан тушаал</th><th>Алба</th><th>Хуваарилсан</th><th>Шийдсэн</th><th>Хугацаандаа</th><th>Ачаалал</th><th>KPI оноо</th></tr></thead><tbody id="empBody"></tbody></table></div>
+  <div style="text-align:center;margin-top:10px"><button class="btn" id="more">Цааш харах</button></div>
+</section>
+
+<section class="card" data-s="trend">
+  <div class="ch"><div class="num"></div><div><h2>Байгууллагын KPI онооны чиг хандлага</h2><p id="trendSub"></p></div></div>
+  <div class="chart" id="trend"></div>
+</section>
+
+<section class="card" data-s="kci">
+  <div class="ch"><div class="num"></div><div><h2>KCI — хяналтын үзүүлэлт</h2><p>Эрсдэл, нийцлийн хяналт — босгоос доош орвол эзэнд мэдэгдэнэ</p></div></div>
+  <div id="kciList"></div>
+</section>
+
+<section class="card" data-s="src">
+  <div class="ch"><div class="num"></div><div><h2>Эх сурвалж системүүд</h2><p>Синк, ontology объект, identity map-ийн таарц</p></div></div>
+  <div class="tw"><table><thead><tr><th>Систем</th><th>Ontology объект</th><th>Сүүлийн синк</th><th>Identity таарц</th><th>Төлөв</th></tr></thead><tbody id="srcBody"></tbody></table></div>
+</section>
+</div>
+
+<div class="foot">Эх сурвалж: Odoo 19 · GitLab Ultimate · Jira · IT support → Data lakehouse → Ontology → Metric layer</div>
+</div>
+
+<script>
+/* ---------- Төслийн удирдлагын алба-1 бүтэц ---------- */
+const ORG=[
+ {g:"Программ менежер",k:"pgm",plan:1,ppl:[["Энхтогтох Чулуундорж",["Портфель (бүх төсөл)"]]]},
+ {g:"Төслийн менежер",k:"pm",plan:7,ppl:[
+  ["Алтантуяа Азжаргал",["Siro","ExamOn","KFC","Pizza Hut"]],["Ану Ганбаатар",["Shopify","Siro","MEDON","Санхүүгийн түрээс"]],
+  ["Бэлгүтэй Баттулга",["Cloud strategy","IAM - SSO"]],["Дашмягмар Гантулга",["TBG Life","Odoo 19 Finance","RFID","Fleet management","KFC/PH/ExamOn нэмэлт"]],
+  ["Сайханбаяр Эрдэнэтулга",["Odoo 19 Operation"]],["Уянга Мөнхбаяр",["Odoo 19 HRMS"]],["Хонгорзул Нэргүй",["Odoo 19 Finance core"]],
+  ["Молорчимэг Түмэнбаяр",["Тендер","Жуулчин бааз POS","Кемпински + Жуулчин Opera"]]]},
+ {g:"Бүтээгдэхүүний дизайнер",k:"pd",plan:1,ppl:[["Эрдэнэбаатар Эрхэмбат",["UI/UX — бүх төсөл"]]]},
+ {g:"Ахлах бүтээгдэхүүний дизайнер",k:"pd",plan:1,ppl:[["Энх-Амар Болдбаатар",["Design system","UX research"]]]},
+ {g:"Бизнес аналист",k:"ba",plan:6,ppl:[
+  ["Алтанбагана Энхбаяр",["MEDON (?)"]],["Амартүвшин Гантөмөр",["Odoo 19 Finance"]],
+  ["Батсүх Сундуйжав",["time On","KFC","Pizza Hut","TCM","Juulchin","DAG phase 2","Odoo 19 эрсдэл"]],
+  ["Ууганбаяр Батбаатар",["TCM дэмжлэг","Odoo 19 Fin","Нэвтрүүлэлтийн баг"]],["Эрдэмбилэг Анхбаяр",["Odoo 19 HRM","TBG Life"]],["Өсөхбаяр Батхүү",["Odoo 19 Operation"]]]},
+ {g:"Tech lead",k:"tl",plan:5,ppl:[["Гандаваа Дугарсүрэн",["Odoo 19 Finance","Shopify"]],["Ганхуу Мягмарбат",["Odoo 19 HRMS","ExamOn","Жуулчин POS"]],["Даваадорж Бадарч",["Odoo 19 Operation","Siro"]],["Нямбаяр Батбаяр",["TBG Life","KFC / Pizza Hut"]],["Сандагдорж Энхтайван",["Cloud / IAM-SSO","Fleet","RFID"]]]},
+ {g:"Ахлах программ хангамжийн инженер",k:"sse",plan:10,ppl:["Анударь Цэрэннадмид","Дэлгэрцэцэг Сүхбаатар","Жамба Батгэрэл","Лхагвадорж Баасандорж","Мөнхтогтох Баасангарав","Нямбаяр Сайнтогтох","Хулан Онон","Энхболд Тамир","Эрболд Энхжаргал","Ж.Мөнхбат"].map(n=>[n])},
+ {g:"Программ хангамжийн инженер",k:"se",plan:10,ppl:["Батнасан Цэрэнбазар","Гантулга Батмөнх","Золбоо Батсайхан","Мөнхчимэг Мөнх-Амгалан","Хатансайхан Эрдэнэбилэг","Чулуун-Өлзий Зундуй","Х.Мөрөн","М.Гансүх","З.Балдорж","А.Айтмухамед"].map(n=>[n])}
+];
+const ROLEKPI={
+ pgm:["Портфелийн SPI ≥ 0.9","Эрсдэл шийдвэрлэлт ≥ 80%","Төсөвт багтсан төсөл ≥ 85%"],
+ pm:["SPI ≥ 0.9, CPI ≥ 0.95","Milestone хугацаандаа ≥ 85%","Захиалагчийн сэтгэл ханамж ≥ 4.3","1 PM ≤ 3 идэвхтэй төсөл"],
+ pd:["Дизайн батлалтын мөчлөг ≤ 5 хоног","Usability score ≥ 80","Дахин хийлт ≤ 10%"],
+ ba:["BRD батлалт ≤ 7 хоног","Шаардлагын өөрчлөлт ≤ 2 / үе шат","UAT-д илэрсэн шаардлагын алдаа ≤ 5%"],
+ tl:["Lead time ≤ 2 хоног","Change failure rate ≤ 15%","Code review ≤ 24 ц","Багийн sprint predictability ≥ 85%"],
+ sse:["Story point биелэлт ≥ 85%","Review хийсэн MR ≥ 20 / сар","Bug escape ≤ 5%"],
+ se:["Story point биелэлт ≥ 85%","MR merge хугацаа ≤ 2 хоног","Bug escape ≤ 8%"]
+};
+/* ---------- Төслийн портфель ---------- */
+const P=(n,co,pm,ba,tl,st,prog,elap,bud,spent)=>({n,co,pm,ba,tl,st,prog,elap,bud,spent});
+const PROJ=[
+ P("Odoo 19 Finance core","Групп (17 компани)","Хонгорзул Н.","Амартүвшин Г., Ууганбаяр Б.","Гандаваа Д.","Хөгжүүлэлт",58,66,420,302),
+ P("Odoo 19 HRMS","Групп (17 компани)","Уянга М.","Эрдэмбилэг А.","Ганхуу М.","Тест",72,75,260,180),
+ P("Odoo 19 Operation","Групп (17 компани)","Сайханбаяр Э.","Өсөхбаяр Б.","Даваадорж Б.","Хөгжүүлэлт",44,52,310,160),
+ P("TBG Life","Таван Богд Групп","Дашмягмар Г.","Эрдэмбилэг А.","Нямбаяр Б.","Хөгжүүлэлт",38,46,380,170),
+ P("Fleet management","Таван Богд Групп","Дашмягмар Г.","","Сандагдорж Э.","BRD",12,30,140,20),
+ P("RFID","Таван Богд Групп","Дашмягмар Г.","","Сандагдорж Э.","BRD",20,22,90,18),
+ P("KFC / Pizza Hut захиалга","Таван Богд Фүүдс","Алтантуяа А.","Батсүх С.","Нямбаяр Б.","Хөгжүүлэлт",35,60,220,120),
+ P("ExamOn","Дотоод бүтээгдэхүүн","Алтантуяа А.","Батсүх С.","Ганхуу М.","UAT",86,90,80,70),
+ P("Siro","Дотоод бүтээгдэхүүн","Ану Г.","","Даваадорж Б.","Хөгжүүлэлт",50,55,120,66),
+ P("MEDON","Дотоод бүтээгдэхүүн","Ану Г.","Алтанбагана Э. (?)","","BRD",15,35,160,30),
+ P("Shopify — Жуулчин","Жуулчин","Ану Г.","Батсүх С.","Гандаваа Д.","Нэвтрүүлэлт",92,95,70,64),
+ P("Cloud strategy + IAM-SSO","Таван Богд Групп","Бэлгүтэй Б.","","Сандагдорж Э.","Хөгжүүлэлт",40,45,260,98),
+ P("Кемпински + Жуулчин Opera","Жуулчин","Молорчимэг Т.","","","BRD",10,30,110,14),
+ P("Жуулчин бааз POS","Жуулчин","Молорчимэг Т.","Батсүх С.","Ганхуу М.","Тест",70,72,60,41)
+];
+const spi=p=>p.prog/p.elap, cpi=p=>p.prog/(p.spent/p.bud*100), eac=p=>p.bud/cpi(p);
+const sst=v=>v>=.9?"g":v>=.8?"a":"r";
+/* ---------- Албад ---------- */
+const DEPTS=[
+ {id:"pmo",name:"Төслийн удирдлагын алба-1",n:42,prev:0.7,kpis:[["Хуваарьт явж буй төсөл",64,80,"hi","%","Jira"],["Төсөвт багтсан төсөл",79,85,"hi","%","Odoo 19 + Jira"],["BRD батлалтын хугацаа",9,7,"lo"," хоног","Jira"],["Deploy давтамж",4.2,3,"hi","/өдөр","GitLab"],["Change failure rate",12,15,"lo","%","GitLab"],["Sprint predictability",78,85,"hi","%","Jira"]]},
+ {id:"hr",name:"Хүний нөөц",n:18,prev:-0.8,roles:["HR менежер","Сонгон шалгаруулагч","Цалингийн нягтлан","HR мэргэжилтэн"],kpis:[["Ажилтны урсгал (сар)",1.4,1.5,"lo","%","Odoo 19"],["Ажилд авах хугацаа",26,30,"lo"," хоног","Odoo 19"],["Сургалтын цаг / хүн",6.2,8,"hi"," ц","Odoo 19"],["Мастер дата бүрэн",97.8,99,"hi","%","Odoo 19"]]},
+ {id:"sup",name:"IT support",n:42,prev:0.4,roles:["Helpdesk","Талбарын IT инженер","Сүлжээний инженер","Систем инженер","SAP туслах","Odoo туслах"],kpis:[["SLA хангалт",96.6,95,"hi","%","IT support"],["Анх хандалтаар шийдсэн",68,70,"hi","%","IT support"],["Дундаж шийдвэрлэлт",5.2,8,"lo"," ц","IT support"],["Сэтгэл ханамж",4.6,4.5,"hi"," / 5","IT support"],["Хугацаа хэтэрсэн тикет",8,5,"lo","","IT support"]]},
+ {id:"infra",name:"Дэд бүтэц, DevOps",n:22,prev:0.2,roles:["DevOps инженер","Cloud инженер","Систем администратор","Security инженер"],kpis:[["Платформын uptime",99.92,99.9,"hi","%","IT support"],["Нөөцлөлтийн амжилт",98.6,98,"hi","%","IT support"],["Patch хугацаандаа",91,95,"hi","%","GitLab"],["Cloud зардлын зөрүү",6,5,"lo","%","Odoo 19"]]},
+ {id:"ai",name:"AI & data",n:22,prev:2.3,roles:["Data engineer","ML engineer","BI аналист","AI automation инженер"],kpis:[["Хэмнэсэн хүн/цаг (сар)",146,120,"hi"," ц","Lakehouse"],["Pipeline freshness",98.2,99,"hi","%","Lakehouse"],["Data quality score",93,95,"hi","%","Lakehouse"],["Prod дахь AI модел",7,6,"hi","","GitLab"]]},
+ {id:"fin",name:"Санхүүгийн алба",n:34,prev:-1.2,roles:["Ерөнхий нягтлан","Нягтлан бодогч","Санхүүгийн шинжээч","Төлбөр тооцооны мэргэжилтэн"],kpis:[["Сарын хаалтын хугацаа",6,5,"lo"," хоног","Odoo 19"],["Төсвийн зөрүү",3.8,5,"lo","%","Odoo 19"],["Хугацаандаа төлсөн AP",91,95,"hi","%","Odoo 19"],["Тулгалтын зөрүүтэй данс",4,1,"lo","","Odoo 19"]]},
+ {id:"atm",name:"ATM service",n:70,prev:0.9,roles:["ATM техникч","Талбарын инженер","Диспетчер","Сэлбэгийн нярав"],kpis:[["ATM ажиллах хугацаа",99.1,99.5,"hi","%","IT support"],["Талбарын MTTR",3.6,4,"lo"," ц","IT support"],["Нэг очилтоор зассан",84,85,"hi","%","IT support"],["Мөнгө дууссан тохиолдол",3,5,"lo","","IT support"]]}
+];
+const att=k=>k[3]==="hi"?k[1]/k[2]:k[2]/k[1];
+const stat=k=>{const a=att(k);return a>=1?"g":a>=0.9?"a":"r"};
+const ST={g:"Хангасан",a:"Зорилтоос бага",r:"Анхаарах"};
+DEPTS.forEach(d=>d.score=Math.min(100,d.kpis.reduce((s,k)=>s+Math.min(att(k),1.05),0)/d.kpis.length*100));
+
+/* ---------- Ажилтны жишээ өгөгдөл ---------- */
+function rng(s){return()=>{s|=0;s=s+0x6D2B79F5|0;let t=Math.imul(s^s>>>15,1|s);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+const R=rng(20261002);
+const mk=(nm,role,d,base,extra)=>{const as=Math.round(18+R()*70),done=Math.round(as*(0.82+R()*0.18)),ot=Math.round(68+R()*32),load=Math.round(base-24+R()*46);
+  const score=Math.round(0.4*ot+0.35*done/as*100+0.25*Math.max(0,100-Math.abs(load-95)*1.6));return Object.assign({nm,role,d,as,done,ot,load,score},extra||{})};
+const EMP=[];
+ORG.forEach(c=>c.ppl.forEach(p=>{const pr=p[1]||[];
+  const base=c.k==="pm"?62+pr.length*12:c.k==="ba"?70+pr.length*7:c.k==="pd"?112:c.k==="pgm"?108:96;
+  EMP.push(mk(p[0],c.g,"pmo",base,{grp:c.g,k:c.k,proj:pr}));
+}));
+const SUR="БГДЭСЦОНТМАЛХ".split(""),GIV=["Анхбаяр","Батцэцэг","Болормаа","Ганзориг","Дөлгөөн","Энхжин","Жавхлан","Золжаргал","Мөнхзул","Номин","Отгонбаяр","Пүрэвдорж","Сарантуяа","Тэмүүжин","Уянга","Халиун","Цогтбаяр","Шинэбаяр","Эрдэнэбат","Ялалт","Амарсанаа","Билгүүн","Гэрэлмаа","Дашдорж","Нандин","Оргил","Сүхбат","Түвшин","Хонгорзул","Чинзориг"];
+DEPTS.filter(d=>d.id!=="pmo").forEach(d=>{const b={atm:97,sup:95,infra:99,ai:92,fin:96,hr:88}[d.id];
+  for(let i=0;i<d.n;i++)EMP.push(mk(SUR[Math.floor(R()*SUR.length)]+"."+GIV[Math.floor(R()*GIV.length)],d.roles[Math.floor(R()*d.roles.length)],d.id,b));});
+const TOTAL=EMP.length;
+
+const TREND={m:{lab:["4-р","5-р","6-р","7-р","8-р","9-р"],v:[82.1,83.4,84.0,85.2,86.1,87.4],sub:"Сүүлийн 6 сар · босго 85",per:"2026 оны 9-р сар"},
+ q:{lab:["2025 Q4","2026 Q1","2026 Q2","2026 Q3"],v:[79.6,81.8,83.2,86.2],sub:"Сүүлийн 4 улирал · босго 85",per:"2026 оны 3-р улирал"},
+ y:{lab:["2024","2025","2026*"],v:[74.8,80.3,85.0],sub:"Жилээр · 2026 он одоогийн байдлаар · босго 85",per:"2026 он (9 сар)"}};
+const SRC=[["Odoo 19","Employee, Department, CostEntry","10:12","250 / 250","g","Хэвийн"],["GitLab Ultimate","Deployment, MergeRequest","10:05","61 / 64","g","Хэвийн"],["Jira","Project, WorkItem, Sprint, Worklog","10:00","142 / 148","a","6 таараагүй"],["IT support","Ticket, Asset, Incident","09:58","112 / 112","g","Хэвийн"],["Data lakehouse","Gold → Ontology","09:45","—","a","Удааширсан"]];
+const KCI=[["Мастер дата бүрэн байдал","Хүний нөөц",97.8,99,"chro"],["Security scan pass","Төслийн удирдлагын алба-1",94,95,"cto"],["Нөөцлөлтийн амжилт","Дэд бүтэц, DevOps",98.6,98,"cto"],["Хандалтын эрх шалгалт","Дэд бүтэц, DevOps",100,100,"cto"],["Батлагдаагүй гүйлгээ ≤ 2%","Санхүүгийн алба",96.4,98,"cfo"],["Гэрээгүй гадаад зардал 0","Санхүүгийн алба",97,100,"cfo"],["ATM patch хугацаандаа","ATM service",88,95,"cto"]];
+
+
+/* ---------- Санхүү (TBTech monthly report) ---------- */
+const FIN={"co":"Таван Богд Тек ХХК","month":8,"cons":{"rev":{"m25":4761910930,"m26p":4849904916,"m26":5282782614,"y25":30412828912,"y26p":41865126290,"y26":39868916871,"f25":45327896069,"f26p":61428390579,"f26f":58599992809,"a25":[3280114522,2684773143,2666870253,3411918768,4527479058,3365384072,5714378166,4761910930,4537133793,3020813475,3479981611,3877138278],"p26":[3316989514,3143158712,3707940199,11444345139,3475549283,6738067031,5189171496,4849904916,4497701444,4901472921,3903116464,6260973459],"f26":[3316989514,3143158712,3707940199,11444345139,3253119644,6820186961,2900394089,5282782614,4212317243,4738110351,3374804274,6405844071]},"gp":{"m25":1725227092,"m26p":1933827577,"m26":1402717461,"y25":9770903377,"y26p":13421266254,"y26":11813508060,"f25":15324714860,"f26p":21099735228,"f26f":18052179409,"a25":[1409632963,823752719,998685421,1025142454,1466304041,1210805758,1111352928,1725227092,1468482078,1367925013,1731854331,985550061],"p26":[1816717692,1383989618,1468331962,1800704768,1032894578,1929397575,2055402484,1933827577,1519674507,2101265549,1524294559,2533234359],"f26":[1816717692,1383989618,1468331962,1800704768,1182031984,1820421286,938593289,1402717461,1388593916,1622580121,1059028519,2168468793]},"cm":{"m25":1032194089,"m26p":1360586918,"m26":697438882,"y25":6229623545,"y26p":7445574214,"y26":5411408896,"f25":8063510102,"f26p":11483037597,"f26f":7994201739,"a25":[986873399,322859174,562870878,630448619,1125332247,823358037,745687101,1032194089,640266217,834122529,797621724,-438123913],"p26":[1132761848,725983072,667188035,457051073,443718519,1310148622,1348136127,1360586918,939626692,1089599816,967789734,1040447141],"f26":[1132761848,725983072,667188035,457502235,567111291,1074087101,89336431,697438882,788587470,567687510,259883791,966634072]},"op":{"m25":686015008,"m26p":984574934,"m26":386094228,"y25":4058587538,"y26p":5105915555,"y26":3727834486,"f25":4902319381,"f26p":7000679755,"f26f":4948048274,"a25":[769162093,114332164,343097108,441996586,828979288,510927228,364078063,686015008,397595584,527000342,612999782,-693863864],"p26":[991201643,566949712,422335252,307675560,138556094,796254661,898367699,984574934,463348024,660496622,602007528,168912026],"f26":[991201643,566949712,422335252,308942923,402026156,770463978,-120179406,386094228,476381492,379390219,48967233,315474844]},"ebit":{"m25":698039376,"m26p":1007830178,"m26":447394918,"y25":4214181827,"y26p":5329412093,"y26":3994539078,"f25":5132861474,"f26p":7398668829,"f26f":5238552866,"a25":[766380910,112194405,383763860,461149999,832065195,515967217,444620865,698039376,400993496,537449915,621194774,-640958538],"p26":[1087055274,606688091,323136975,382762909,180238831,819842601,921857235,1007830178,493363266,695522370,649461481,230909619],"f26":[1087055274,606688091,323136975,384030272,445130978,795929812,-94827242,447394918,475406492,391315219,46992233,330299844]},"np":{"m25":607087874,"m26p":891383771,"m26":418337090,"y25":3735353525,"y26p":4805528328,"y26":3667252260,"f25":4602312479,"f26p":6625376359,"f26f":4752668375,"a25":[681596765,91905444,336502944,406694733,747411530,460267666,403886568,607087874,330806166,537400163,576573673,-577821048],"p26":[1075735752,596670199,182030558,332264290,154866258,753151944,819425555,891383771,439864240,620926885,578202646,180854261],"f26":[1075735752,596670199,182030558,333531653,414335437,761580947,-114969376,418337090,417697328,343722947,34824495,289171345]},"capex":{"m25":0,"m26p":0,"m26":0,"y25":0,"y26p":1474707660,"y26":1374864660,"f25":0,"f26p":1474707660,"f26f":1474707660,"a25":[0,0,0,0,0,0,0,0,0,0,0,0],"p26":[8840000,0,19420000,159285000,945050000,342112660,0,0,0,0,0,0],"f26":[8840000,0,19420000,159285000,945050000,242269660,0,0,99843000,0,0,0]},"hc":{"m25":287,"m26p":351,"m26":248,"y25":336,"y26p":281,"y26":248,"f25":407,"f26p":281,"f26f":231,"a25":[236,237,235,231,227,224,224,287,277,335,335,335],"p26":[413,400,394,358,351,351,351,351,351,351,351,351],"f26":[413,400,394,286,281,275,251,248,231,231,231,231]},"cogs":{"m25":3036683838,"m26p":2916077339,"m26":3880065153,"y25":20641925535,"y26p":28443860036,"y26":28055408812,"f25":30003181209,"f26p":40328655351,"f26f":40547813400,"a25":[1870481559,1861020423,1668184832,2386776315,3061175016,2154578314,4603025239,3036683838,3068651715,1652888462,1748127280,2891588217],"p26":[1500271822,1759169094,2239608237,9643640371,2442654705,4808669456,3133769012,2916077339,2978026937,2800207372,2378821906,3727739100],"f26":[1500271822,1759169094,2239608237,9643640371,2071087660,4999765675,1961800800,3880065153,2823723326,3115530229,2315775755,4237375278]},"sm":{"m25":693033003,"m26p":573240659,"m26":705278580,"y25":3541279832,"y26p":5975692040,"y26":6402099164,"f25":7261204758,"f26p":9616697631,"f26f":10057977670,"a25":[422759564,500893545,435814543,394693834,340971794,387447721,365665827,693033003,828215861,533802484,934232607,1423673974],"p26":[683955844,658006546,801143927,1343653695,589176059,619248953,707266357,573240659,580047815,1011665733,556504825,1492787218],"f26":[683955844,658006546,801143927,1343202533,614920693,746334185,849256857,705278580,600006446,1054892611,799144729,1201834721]},"ga":{"m25":346179080,"m26p":376011984,"m26":311344654,"y25":2171036007,"y26p":2339658659,"y26":1683574409,"f25":3161190720,"f26p":4482357842,"f26f":3046153464,"a25":[217711306,208527010,219773771,188452033,296352960,312430809,381609038,346179080,242670633,307122187,184621943,255739951],"p26":[141560205,159033359,244852783,149375514,305162425,513893961,449768428,376011984,476278668,429103194,365782206,871535115],"f26":[141560205,159033359,244852783,148559313,165085135,303623123,209515838,311344654,312205978,188297291,210916557,651159228]},"finc":{"m25":16868169,"m26p":9800000,"m26":28999328,"y25":81753474,"y26p":246366175,"y26":309130275,"f25":221235766,"f26p":285566175,"f26f":309130275,"a25":[10998499,10335427,9803502,9264308,8717745,8163714,7602112,16868169,28144088,11154934,19995493,80187778],"p26":[11240222,8459796,139847548,47618609,9800000,9800000,9800000,9800000,9800000,9800000,9800000,9800000],"f26":[11240222,8459796,139847548,47618609,24212062,28610575,20142135,28999328,0,0,0,0]},"pay":{"m25":null,"m26p":null,"m26":null,"y25":8319223315,"y26p":9372631537,"y26":9194471904,"f25":14169985539,"f26p":13852704530,"f26f":13703565586,"a25":[719279511,929959452,727210650,713529174,710110646,736937592,2651955904,1130240386,1754616054,1411790803,1116090364,1568265003],"p26":[1142752183,1211873409,1369363345,1075361386,1099847530,1077746267,1288193759,1107493659,1088032333,1179000071,1130532958,1082507631],"f26":[1142752183,1211873409,1369363345,1094434406,959509571,1006344248,1031172268,1379022474,934265812,1169897845,1015762723,1389167301]}},"depts":[{"n":"Ухаалаг төхөөрөмжийн борлуулалтын хэлтэс","s":"Ухаалаг төхөөрөмж","rev":{"m25":2809775262,"m26p":2164926553,"m26":3118386583,"y25":14654056074,"y26p":21443119798,"y26":21194809697,"f25":19826544344,"f26p":28729842972,"f26f":28804719679,"a25":[1008932298,1049156288,1114852744,1791037160,2892333719,1639857710,2348110893,2809775262,1995542699,374323490,1146375026,1656247055],"p26":[426683104,954965255,1174374892,9016447481,1380818364,4059405174,2265498975,2164926553,2240953427,1131278728,1554081582,2360409438],"f26":[426683104,954965255,1174374892,9016447481,1173192672,4295128719,1035630992,3118386583,2255809982,1408050000,1489050000,2457000000]},"gp":{"m25":577411487,"m26p":442177027,"m26":498332263,"y25":2936615739,"y26p":2540560539,"y26":2342490839,"f25":4061122740,"f26p":4111099708,"f26f":3934287788,"a25":[125223103,145948843,218774364,257729745,693398325,411952036,506177835,577411487,353912239,105869083,284018757,380706922],"p26":[101991630,239786810,219628944,418869668,275544061,418262087,424300311,442177027,438042298,284348170,305391242,542757459],"f26":[101991630,239786810,219628944,418869668,249932136,415852374,198097013,498332263,509194280,264010056,293720056,524872556]},"cm":{"m25":449792507,"m26p":293950843,"m26":303570557,"y25":1556848944,"y26p":992173539,"y26":680169868,"f25":1998142716,"f26p":1820648817,"f26f":1563110291,"a25":[-53375855,-61763805,42644139,57573626,526596428,233617419,361764485,449792507,184179750,-21529043,148835064,129808001],"p26":[-118587671,50001634,23316732,163761912,115897993,243388884,220443213,293950843,267023984,95873903,166490512,299086879],"f26":[-118587671,50001634,23316732,164213074,59977379,200818436,-3140272,303570557,357615675,72022922,161549220,291752605]},"np":{"m25":316813405,"m26p":185317273,"m26":246326450,"y25":857503829,"y26p":376598995,"y26":310651674,"f25":1027697463,"f26p":696636085,"f26f":799359836,"a25":[-110026926,-108747293,6966329,-10919778,397215442,127912511,238290140,316813405,110906525,-62933088,121836864,383334],"p26":[-132158270,37158454,-71603557,141521282,47867973,76345208,92150633,185317273,142142810,644891,82650491,94598899],"f26":[-132158270,37158454,-71603557,142193530,32451167,109208815,-52924913,246326450,236925827,31133644,99501470,121147220]},"hc":{"m25":42,"m26p":36,"m26":29,"y25":42,"y26p":36,"y26":29,"f25":43,"f26p":36,"f26f":27,"a25":[43,45,43,41,40,40,40,42,42,42,42,42],"p26":[31,31,32,35,36,36,36,36,36,36,36,36],"f26":[31,31,32,35,36,35,29,29,27,27,27,27]}},{"n":"АТМ засвар үйлчилгээний хэлтэс","s":"АТМ засвар үйлчилгээ","rev":{"m25":1327603886,"m26p":1415125574,"m26":1418446912,"y25":11113823042,"y26p":11815593866,"y26":11859121630,"f25":16397196654,"f26p":19229522522,"f26f":18669107887,"a25":[1953387068,1231896113,1214065159,1309804432,1333568000,1414723931,1328774454,1327603886,1283645931,1246710477,1418155886,1334861318],"p26":[2055487535,1367059901,1414004557,1356671577,1346952294,1565120854,1295171574,1415125574,1353907734,2246054038,1282204054,2531762830],"f26":[2055487535,1367059901,1414004557,1356671577,1375963719,1575419752,1296067678,1418446912,1336889552,2036796233,1144968975,2291331498]},"gp":{"m25":683718716,"m26p":726633741,"m26":605734994,"y25":5826348158,"y26p":6291231779,"y26":6319952695,"f25":8502072308,"f26p":9464775857,"f26f":8984689503,"a25":[1182857937,642672319,645282043,680507227,690807320,683973806,616528790,683718716,702862729,650948101,687935591,633977728],"p26":[1417170830,772037658,678028781,741683632,444229147,845028118,666419871,726633741,640591795,827764327,649761934,1055426020],"f26":[1417170830,772037658,678028781,741683632,558402589,863991975,682902236,605734994,630665241,668841164,466415546,898814857]},"cm":{"m25":604617391,"m26p":633784472,"m26":562258645,"y25":4945821627,"y26p":5562306714,"y26":5645293370,"f25":7015475092,"f26p":8022931001,"f26f":7747172245,"a25":[1055371710,476431465,485062998,563191022,608285841,582746114,570115087,604617391,583047876,597029701,619454363,270121525],"p26":[1369237430,706970664,602528921,547178483,375195936,752079989,575330819,633784472,574500009,654000903,573947109,658176266],"f26":[1369237430,706970664,602528921,547178483,511164007,815856116,530099104,562258645,553594351,493815165,396048306,658421054]},"np":{"m25":351982535,"m26p":431141484,"m26":488337219,"y25":3274087700,"y26p":4668080114,"y26":5195539724,"f25":4765523208,"f26p":6254366937,"f26f":6679358037,"a25":[825177146,292323140,314368097,423773776,383479315,350688220,332295470,351982535,412203473,484670686,517749033,76812316],"p26":[1342096381,682610443,482413954,526245079,267142112,558774108,377656554,431141484,379375437,462748314,419407833,324755239],"f26":[1342096381,682610443,482413954,526540426,466744691,728733047,478063564,488337219,409492327,382222208,309171569,382932209]},"hc":{"m25":105,"m26p":97,"m26":91,"y25":105,"y26p":97,"y26":91,"f25":109,"f26p":97,"f26f":89,"a25":[108,108,107,106,106,105,105,105,105,105,105,105],"p26":[92,93,93,99,97,97,97,97,97,97,97,97],"f26":[92,93,93,99,97,97,91,91,89,89,89,89]}},{"n":"AI & IT хөгжүүлэлтийн хэлтэс","s":"AI & IT хөгжүүлэлт","rev":{"m25":624531782,"m26p":1269852789,"m26":745949120,"y25":4644949796,"y26p":8606412627,"y26":6814985544,"f25":9104155071,"f26p":13469025085,"f26f":11126165243,"a25":[317795157,403720742,337952350,311077177,301577339,310802431,2037492820,624531782,1257945163,1399779508,915450698,886029905],"p26":[834818874,821133556,1119560750,1071226081,747778625,1113541003,1628500947,1269852789,902840283,1524140155,1066830828,1368801191],"f26":[834818874,821133556,1119560750,1071226081,703963254,949638490,568695420,745949120,619617709,1293264118,740785300,1657512572]},"gp":{"m25":464096888,"m26p":765016809,"m26":298650205,"y25":1007939480,"y26p":4589473936,"y26":3151064526,"f25":2761519812,"f26p":7523859664,"f26f":5133202117,"a25":[101551924,35131558,134629014,86905481,82098396,114879917,-11353698,464096888,411707110,611107828,759899982,-29134589],"p26":[297555232,372165149,570674237,640151468,313121370,666107370,964682302,765016809,441040414,989153052,569141382,935050879],"f26":[297555232,372165149,570674237,640151468,373697259,540576937,57594039,298650205,248734395,689728901,298892916,744781379]},"cm":{"m25":-22215809,"m26p":432851603,"m26":-168390320,"y25":-273047026,"y26p":891093961,"y26":-914054342,"f25":-904717778,"f26p":1639457779,"f26f":-1316080798,"a25":[-15122455,-91808486,35163742,9683972,-9550021,6994503,-186192471,-22215809,-126961409,258621871,29332297,-792663510],"p26":[-117887911,-30989226,41342382,-253889321,-47375410,314679749,552362096,432851603,98102699,339725010,227352112,83183996],"f26":[-117887911,-30989226,41342382,-253889321,-4030094,57412549,-437622400,-168390320,-122622555,1849423,-297713736,16460413]},"np":{"m25":-61708066,"m26p":274925014,"m26":-316326579,"y25":-396238005,"y26p":-239150781,"y26":-1838939139,"f25":-1190908192,"f26p":-325626663,"f26f":-2726049498,"a25":[-33553455,-91670403,15168518,-6159265,-33283228,-18333065,-166699042,-61708066,-192303832,115662566,-63012224,-655016698],"p26":[-134202358,-123098698,-228779839,-335502072,-160143827,118032629,349618368,274925014,-81654007,157533680,76144322,-238499877],"f26":[-134202358,-123098698,-228779839,-335202302,-84860421,-76360915,-540108027,-316326579,-228720826,-69632905,-373848545,-214908084]},"hc":{"m25":140,"m26p":114,"m26":110,"y25":140,"y26p":114,"y26":110,"f25":186,"f26p":114,"f26f":97,"a25":[85,84,85,84,81,79,79,140,130,188,188,188],"p26":[138,122,116,114,114,114,114,114,114,114,114,114],"f26":[138,122,116,114,114,110,110,110,97,97,97,97]}}],"units":[{"g":"Ухаалаг төхөөрөмж","n":"Xerox","rev":{"a25":[325380749,191950792,556748028,713794819,826361187,631444301,269145430,596720647,447293326,267821759,518938089,534249228],"p26":[290185059,494518255,399095710,379420254,528505000,599872086,455688159,574928660,566884615,601742600,570000000,779000000],"f26":[290185059,494518255,399095710,379420254,369143672,777563237,191503764,336245132,786724982,380000000,420000000,700000000]},"np":{"a25":[-73926767,-87916586,41582666,16055686,162651570,34783594,-31688584,100813216,39075730,13759841,99298336,-416172],"p26":[-64909182,100006670,-82449959,-113828740,39817071,81045484,21752638,77652201,54359103,11255691,53502807,41539252],"f26":[-64909182,100006670,-82449959,-113327644,-2454177,136001367,-39163537,30363611,161093059,31590059,75058848,109360305]}},{"g":"Ухаалаг төхөөрөмж","n":"Axis","rev":{"a25":[274161182,322695495,80718443,172891886,1422760823,679341318,2060463645,1086472342,1079738463,51927185,461606938,464882373],"p26":[66327636,38820273,105218727,201018045,259247000,370913175,1149765014,1042679364,881568465,431308508,131308508,1395000000],"f26":[66327636,38820273,105218727,201018045,279243818,144601664,55372136,1195949542,1201467091,0,544000000,1373000000]},"np":{"a25":[-9123097,-32854221,-8921246,-54139066,212578685,96969242,314010638,79124153,26961182,-74772885,18372717,77148887],"p26":[-55212106,-36129646,9424995,-4483535,-1454474,2953861,66304960,93399491,57271624,3562838,-2292517,51106960],"f26":[-55212106,-36129646,9424995,-4425718,-20282925,-26300768,-111331605,123491882,68349781,-4660000,12776405,16145600]}},{"g":"Ухаалаг төхөөрөмж","n":"Картын бэлдэц","rev":{"a25":[289977273,0,106931818,664518182,539636364,267045455,0,1098545455,130000000,0,163818182,513224545],"p26":[46081227,0,243227273,1288638636,305132000,0,560000000,0,672000000,0,700000000,0],"f26":[46081227,0,243227273,1288638636,204336364,282931818,503554545,256109091,176181818,994050000,471050000,250000000]},"np":{"a25":[-23011576,-10414528,-12034370,9227881,17712330,505963,-29074863,141535229,-12596069,-8781172,20615591,50637005],"p26":[4752905,-35062517,-1780647,142256935,8263559,-19052723,9613712,-12382337,26820648,-14548179,26698331,-989141],"f26":[4752905,-35062517,-1780647,142285229,18430334,38713133,55068726,34123040,7107016,7976629,14176363,3719191]}},{"g":"Ухаалаг төхөөрөмж","n":"License","rev":{"a25":[119358549,420127273,268727182,158406818,1317182,7353636,0,10150000,354545,42900000,138182,76605455],"p26":[2372727,393670455,285780545,7124984636,196894000,62272727,19545455,46818182,40000000,17727273,72272727,105909091],"f26":[2372727,393670455,285780545,7124984636,223066818,-20392727,201799682,305244545,39711000,14000000,14000000,14000000]},"np":{"a25":[2928313,18038482,-14177815,11893221,-9084882,-714737,-7487352,-1048266,-7548843,7205981,-5750172,-132740200],"p26":[-18499666,16667340,29072062,143342883,4042585,-2841467,-8261755,1506860,1110420,67872,2342336,1778462],"f26":[-18499666,16667340,29072062,143354220,31512442,-8911950,40367701,53189691,3456250,751075,1107842,860400]}},{"g":"Ухаалаг төхөөрөмж","n":"Pudu+LG","rev":{"a25":[54545,7363636,63636,40840000,66544818,0,136364,363636,326093636,8615455,866364,63220000],"p26":[0,0,5727273,0,71486000,38234545,0,0,0,0,0,0],"f26":[0,0,5727273,0,71486364,619091,0,343636,0,0,0,0]},"np":{"a25":[-6893800,-2245807,-4843458,3170124,12040818,-4104155,-3316564,-3606212,65733243,-809524,-10753481,4968578],"p26":[-182791,-1358899,-1346500,-4539856,-3412913,-3817395,0,0,0,0,0,0],"f26":[-182791,-1358899,-1346500,-4523185,3789412,-4154834,0,103066,0,0,0,0]}},{"g":"Ухаалаг төхөөрөмж","n":"Dell","rev":{"a25":[0,107019091,101663636,40585455,35713345,54673000,18365455,17523182,12062727,3059091,1007273,4065455],"p26":[21716455,27956273,135325364,22385909,19554364,2988112641,80500347,500500347,80500347,80500347,80500347,80500347],"f26":[21716455,27956273,135325364,22385909,25915636,3109805636,83400864,1024494636,51725091,20000000,40000000,120000000]},"np":{"a25":[0,6645367,5360552,2872375,2998576,3753836,1634405,1996077,1122521,464672,53873,785237],"p26":[1892569,-6964494,-24523509,-21226404,612145,18057448,2741077,25141057,2581014,306668,2399534,1163367],"f26":[1892569,-6964494,-24523509,-21169373,1456080,-26138133,2133802,5055161,-3080279,-4524119,-3617988,-8938276]}},{"g":"АТМ засвар үйлчилгээ","n":"Засвар үйлчилгээ","rev":{"a25":[1834047068,1098445204,1115430614,1209042613,1227558909,1314883931,1223970818,1225352977,1179125931,1134532295,1326399522,1222328591],"p26":[1915654808,1232710810,1262259102,1215609759,1215534112,1433702672,1163753392,1283707392,1222489552,2114635856,1150785872,2400344648],"f26":[1915654808,1232710810,1262259102,1215609759,1240101900,1454968843,1191122223,1317188730,1222489552,1922396233,1046168975,2182131498]},"np":{"a25":[817692586,263848591,301650715,386630964,360839586,330484197,322197215,330457273,373244607,437079597,494314306,109299540],"p26":[1263759273,603780898,412149126,448973281,222297795,516957217,335616939,391205777,360360121,428454779,374158958,335774215],"f26":[1263759273,603780898,412149126,467060829,401054214,675817326,443377783,452831575,392219785,339621208,279222715,371859079]}},{"g":"АТМ засвар үйлчилгээ","n":"Цэнэглэлт","rev":{"a25":[119340000,133450909,98634545,100761818,106009091,99840000,104803636,102250909,104520000,112178182,91756364,112532727],"p26":[139832727,134349091,151745455,141061818,131418182,131418182,131418182,131418182,131418182,131418182,131418182,131418182],"f26":[139832727,134349091,151745455,141061818,135861818,120450909,104945455,101258182,114400000,114400000,98800000,109200000]},"np":{"a25":[7484561,28474549,12717382,37142812,22639729,20204023,10098255,21525262,38958866,47591089,23434727,12902704],"p26":[78337108,78829545,70264827,77271798,44844317,41816891,42039615,39935707,19015316,34293536,45248875,-11018975],"f26":[78337108,78829545,70264827,59479597,65690477,52915721,34685780,35505644,17272542,42601000,29948854,11073130]}},{"g":"AI & IT хөгжүүлэлт","n":"Дэд бүтэц","rev":{"a25":[178644277,229592055,207666107,208641388,203898369,216047643,71699608,0,0,0,0,0],"p26":[335887454,475923394,409747156,429409411,400462420,453586701,443382311,417957587,442190192,450190192,445031101,448372010],"f26":[335887454,475923394,409747156,429409411,389585596,396762737,375195459,390264260,397334795,397334795,445877795,445877795]},"np":{"a25":[26258277,68150737,47755555,33198986,42198149,54590648,-82770391,0,0,0,0,0],"p26":[103032389,247461712,91844234,194301845,65589725,82480545,10638502,4817172,37158869,-40257736,60760460,-133413210],"f26":[103032389,247461712,91844234,194388993,192868527,127757407,38957270,81237573,115373758,48435077,175670724,15594360]}},{"g":"AI & IT хөгжүүлэлт","n":"Програм хангамж (ПХ)","rev":{"a25":[50927243,70983050,29344242,3391516,3391515,3799515,1437513758,0,0,377156878,40881174,171205301],"p26":[346538220,209231361,298204545,309620544,121661819,387923484,898064545,555017838,152954545,757254417,287353636,584424545],"f26":[346538220,209231361,298204545,309620544,92479818,284950258,-18340300,148123545,23636364,639930909,23636364,980909091]},"np":{"a25":[-47229019,-174455470,-54512624,-63739006,-60672887,-60635068,-165857760,-2398638,-32614,-224985645,-602561558,-852063848],"p26":[-346015885,-460552273,-625924524,-733660977,-211309089,40535392,335302040,232538323,-165427651,179444243,-68315288,-16955382],"f26":[-346015885,-460552273,-625924524,-733510517,-371326367,-330309493,-623000932,-442961698,-369620046,-125412460,-483439655,-182706546]}},{"g":"AI & IT хөгжүүлэлт","n":"Дата","rev":{"a25":[0,0,0,0,0,0,0,0,0,0,0,0],"p26":[84640000,61052000,223544218,135093200,122622363,154032727,169056000,178879273,189697455,198697455,216448000,218006545],"f26":[84640000,61052000,223544218,135093200,122622364,158591491,108122618,103347491,93880000,133925455,149198182,108652727]},"np":{"a25":[0,0,0,0,0,0,0,0,0,0,0,0],"p26":[79149718,58088886,182927050,105520388,-17858056,-7466496,1144216,21900337,31290247,1428262,65378914,-25059931],"f26":[79149718,58088886,182927050,105562242,88051704,112220813,28847165,54949233,-25209017,-17851890,31206431,-79417526]}},{"g":"AI & IT хөгжүүлэлт","n":"МАБ","rev":{"a25":[41860000,53682000,47242000,47242000,47242000,46828000,13595226,0,0,0,0,0],"p26":[67753201,74926801,188064830,197102926,103032023,117998091,117998091,117998091,117998091,117998091,117998091,117998091],"f26":[67753201,74926801,188064830,197102926,99275476,109334005,103717643,104213823,104766551,122072959,122072959,122072959]},"np":{"a25":[16772358,34401343,31888721,28130831,8640393,26947708,2037305,0,0,0,0,0],"p26":[29631419,31902978,122373402,98336672,3433594,2483188,2533610,15669183,15324528,16918912,18320237,-63071354],"f26":[29631419,31902978,122373402,98356980,5545715,13970357,15088470,-9551688,50734479,25196368,-97286045,31621629]}}],"bs":{"assets":15415547278,"ca":11741096096,"cl":5205341552,"liab":5205341552,"eq":10210205726,"ar":5011735542,"ar_rel":3215503105,"ar_ic":867165377,"ar_tr":929067061,"inv":4714404263,"wip":2563093617,"invdays":51.4,"payroll":9194471904,"payroll_p":9372631537,"pay_pp":5296355,"pay_pp_p":4764937,"defrev":1811885546,"ap":3361509915,"ap_ext":915016444,"ap_dom":2446493471,"prepaid":1687586469}};
+const MN=["1","2","3","4","5","6","7","8","9","10","11","12"];
+const FM={m:["m26","m26p","m25"],y:["y26","y26p","y25"],f:["f26f","f26p","f25"]};
+const FLAB={m:"2026 оны 8-р сар",y:"Өссөн дүн, 1–8 сар",f:"2026 оны жилийн таамаг (1–8 гүйцэтгэл + 9–12 ХБГ)"};
+const C=FIN.cons;
+const sar=v=>v==null?"—":Math.round(v/1e6).toLocaleString("en-US");
+const pct=(a,b)=>b?a/b:null;
+const vs=(a,p)=>{if(a==null||p==null)return["b","—"];if(p>0&&a>=0){const r=a/p;return[r>=1?"g":r>=.9?"a":"r",Math.round(r*100)+"%"]}const df=a-p;return[df>=0?"g":"r",(df>=0?"+":"")+sar(df)+" сая"]};
+const yoy=(a,b)=>b&&b>0&&a!=null?((a/b-1)*100).toFixed(1).replace(/^(?!-)/,"+")+"%":"—";
+const uSum=(arr,mode)=>mode==="m"?arr[7]:arr.slice(0,mode==="y"?8:12).reduce((s,x)=>s+(x||0),0);
+const Y=(r,i)=>r[FM.y[i]];
+const npm=(np,rev)=>rev?np/rev*100:0;
+let finMode="m";
+
+/* ---------- Тооцоолол ---------- */
+const sum=(a,f)=>a.reduce((s,x)=>s+f(x),0), avg=a=>a.reduce((s,x)=>s+x,0)/(a.length||1);
+const pmos=EMP.filter(e=>e.d==="pmo");
+const pmLoad=ORG[1].ppl.map(p=>({n:p[0],c:p[1].length})), pmOver=pmLoad.filter(x=>x.c>3);
+const BAC=sum(PROJ,p=>p.bud), SPENT=sum(PROJ,p=>p.spent), EAC=sum(PROJ,eac), OVR=EAC-BAC;
+const riskP=PROJ.filter(p=>spi(p)<.8), noBA=PROJ.filter(p=>!p.ba), noTL=PROJ.filter(p=>!p.tl);
+const portSPI=sum(PROJ,p=>p.prog*p.bud)/sum(PROJ,p=>p.elap*p.bud), portCPI=sum(PROJ,p=>p.prog*p.bud/100)/SPENT;
+const byCo={};PROJ.forEach(p=>byCo[p.co]=(byCo[p.co]||0)+p.spent);
+const coTop=Object.entries(byCo).sort((a,b)=>b[1]-a[1]);
+const groupScore=sum(DEPTS,d=>d.score*d.n)/sum(DEPTS,d=>d.n);
+const sh=a=>a.map(x=>+(groupScore+x).toFixed(1));TREND.m.v=sh([-5.3,-4,-3.4,-2.2,-1.3,0]);TREND.q.v=sh([-7.8,-5.6,-4.2,-1.2]);TREND.y.v=sh([-12.6,-7.1,-2.4]);
+const allK=DEPTS.flatMap(d=>d.kpis.map(k=>({d,k,s:stat(k)})));
+const redK=allK.filter(x=>x.s==="r");
+const over=EMP.filter(e=>e.load>110), pmoOver=pmos.filter(e=>e.load>110);
+const engs=pmos.filter(e=>e.k==="sse"||e.k==="se");
+const tl=n=>Math.round(n);
+const fm=v=>Math.round(v).toLocaleString("en-US");
+
+
+/* ---------- GitLab инженерийн өгөгдөл (жишээ, 30 хоногийн суурь) ---------- */
+// [key, нэр, TL, repo, шинэ, push, commit, mrOpen, mrMerged, deploy, pipeline%, coverage%, vC, vH, lead(ц), cfr%, mttr(ц), stale]
+const RG=[
+ ["odoo19","Odoo 19 (Finance, HRMS, Operation)","Гандаваа Д.",38,4,1860,1240,212,188,40,91,58,1,6,46,14,3.5,5],
+ ["tbg-life","TBG Life (iOS, Android, API)","Нямбаяр Б.",9,1,780,520,86,74,18,88,62,1,3,40,11,2.8,0],
+ ["platform","Платформ (IAM-SSO, Terraform, CI template)","Сандагдорж Э.",14,2,450,310,58,55,24,96,71,0,2,20,5,1.2,1],
+ ["kfc-ph","KFC / Pizza Hut захиалга","Нямбаяр Б.",7,0,410,290,51,39,7,82,41,1,4,70,22,6.5,0],
+ ["examon","ExamOn","Ганхуу М.",4,0,170,120,22,21,7,94,67,0,1,30,8,2.0,0],
+ ["siro","Siro","Даваадорж Б.",5,1,230,160,28,24,6,90,55,0,2,44,12,3.1,1],
+ ["juulchin","Жуулчин (Shopify, POS, Opera)","Ганхуу М.",6,1,260,180,31,29,9,93,48,0,1,36,9,2.2,0],
+ ["data","Дата (dbt, Airflow, lakehouse)","Сандагдорж Э.",8,1,330,240,40,37,14,95,64,0,1,24,6,1.5,0],
+ ["medon","MEDON","—",3,1,60,40,6,3,0,79,12,0,0,null,null,null,0],
+ ["fleet-rfid","Fleet management, RFID","Сандагдорж Э.",4,2,50,35,5,2,0,85,10,0,0,null,null,null,1],
+ ["legacy","Legacy / архив","—",22,0,20,15,2,2,1,70,20,3,9,null,null,null,18]
+].map(r=>({k:r[0],n:r[1],tl:r[2],repos:r[3],nw:r[4],push:r[5],commit:r[6],mro:r[7],mrm:r[8],dep:r[9],ps:r[10],cov:r[11],vc:r[12],vh:r[13],lead:r[14],cfr:r[15],mttr:r[16],stale:r[17]}));
+const EP={7:{f:.24,nw:[1,0,0,0,0,0,0,1,0,1,0],lab:"7 хоног"},30:{f:1,lab:"30 хоног"},90:{f:2.9,nw:[9,3,5,1,1,2,3,3,1,2,1],lab:"90 хоног"}};
+let engPer=30;
+const R3=rng(4242);
+const WK=Array.from({length:12},(_,i)=>({mr:Math.round(105+i*2.2+(R3()-.5)*22),dep:Math.round(23+i*.9+(R3()-.5)*8)}));
+const ENGR=ORG.filter(c=>["tl","sse","se"].includes(c.k)).flatMap(c=>c.ppl.map(p=>({nm:p[0],role:c.g,k:c.k})));
+ENGR.forEach((e,i)=>{const w=e.k==="tl"?.8:e.k==="sse"?1.2:1;e.grp=RG[[0,1,2,3,4,5,6,7,0,1,0,2,7,0,6,5,0,1,3,0,2,4,0,6,1][i%25]].k;
+  if(e.k==="tl")e.grp={"Гандаваа Дугарсүрэн":"odoo19","Ганхуу Мягмарбат":"examon","Даваадорж Бадарч":"siro","Нямбаяр Батбаяр":"tbg-life","Сандагдорж Энхтайван":"platform"}[e.nm]||e.grp;e.push=Math.round((40+R3()*70)*w);e.mrm=Math.round((6+R3()*12)*w);e.rev=Math.round(e.k==="tl"?28+R3()*30:e.k==="sse"?14+R3()*20:3+R3()*9);e.size=Math.round(60+R3()*320);e.lead=Math.round(14+R3()*60);});
+function engAgg(per){const f=EP[per].f,rg=RG.map((r,i)=>({...r,nw:per===30?r.nw:EP[per].nw[i],push:Math.round(r.push*f),commit:Math.round(r.commit*f),mrm:Math.round(r.mrm*f),mro:Math.round(r.mro*f),dep:Math.round(r.dep*f)}));
+  const S=k=>rg.reduce((s,r)=>s+r[k],0),dd=rg.filter(r=>r.dep>0&&r.lead!=null),wd=k=>dd.reduce((s,r)=>s+r[k]*r.dep,0)/dd.reduce((s,r)=>s+r.dep,0);
+  return{rg,repos:S("repos"),nw:S("nw"),push:S("push"),commit:S("commit"),mro:S("mro"),mrm:S("mrm"),dep:S("dep"),ps:rg.reduce((s,r)=>s+r.ps*r.commit,0)/S("commit"),lead:wd("lead"),cfr:wd("cfr"),mttr:wd("mttr"),vc:S("vc"),vh:S("vh"),stale:S("stale"),days:per,active:per===7?21:per===30?25:27}}
+const DORA_L=[["elite","Элит","var(--green)"],["high","Өндөр","var(--blue)"],["medium","Дунд","var(--amber)"],["low","Бага","var(--red)"]];
+const doraLv={dep:v=>v>=1?0:v>=1/7?1:v>=1/30?2:3,lead:v=>v<24?0:v<168?1:v<720?2:3,cfr:v=>v<=5?0:v<=10?1:v<=15?2:3,mttr:v=>v<1?0:v<24?1:v<168?2:3};
+const grpLv=(r,dy)=>r.lead==null?null:Math.round((doraLv.dep(r.dep/(dy||30))+doraLv.lead(r.lead)+doraLv.cfr(r.cfr)+doraLv.mttr(r.mttr))/4);
+const E30=engAgg(30);
+
+/* ---------- Удирдлагын харагдац ---------- */
+const ROLES={
+ ceo:{lab:"CEO",who:"Гүйцэтгэх захирал",focus:"Стратеги, портфелийн эрэмбэ, хөрөнгө оруулалт, түлхүүр эрсдэл",secs:["dec","fin","budget","bonus","depts","port","trend"],
+  stats:()=>[["Борлуулалт (өссөн)",sar(C.rev.y26)+" сая","Төлөвлөгөөний "+vs(C.rev.y26,C.rev.y26p)[1],vs(C.rev.y26,C.rev.y26p)[0]],["Цэвэр ашиг (өссөн)",sar(C.np.y26)+" сая","Төлөвлөгөөний "+vs(C.np.y26,C.np.y26p)[1],vs(C.np.y26,C.np.y26p)[0]],["Байгууллагын KPI оноо",groupScore.toFixed(1),"Босго 85",groupScore>=85?"g":"a"],["Эрсдэлтэй төсөл",riskP.length,"SPI < 0.8","r"],["Портфелийн SPI",portSPI.toFixed(2),"Зорилт ≥ 0.9",sst(portSPI)],["Улаан KPI",redK.length,"7 албанаас","r"]],
+  dec:()=>[
+   {q:"Аль төслийг үргэлжлүүлэх, дахин төлөвлөх, зогсоох вэ?",s:"r",m:`<b>${riskP.length} төсөл</b> хуваариас 20%+ хоцорсон: ${riskP.map(p=>p.n+" ("+spi(p).toFixed(2)+")").join(", ")}.`,o:["Үргэлжлүүлэх","Хамрах хүрээг багасгах","Түр зогсоож нөөцийг шилжүүлэх"],src:"Jira → Project, Odoo 19 → CostEntry"},
+   {q:"Аль хэлтэст өсөлтөд хөрөнгө оруулж, алинд нь бизнес загвараа өөрчлөх вэ?",s:"r",m:`Өссөн цэвэр маржин: АТМ засвар <b>${npm(FIN.depts[1].np.y26,FIN.depts[1].rev.y26).toFixed(1)}%</b>, Ухаалаг төхөөрөмж ${npm(FIN.depts[0].np.y26,FIN.depts[0].rev.y26).toFixed(1)}%, AI & IT <b>${npm(FIN.depts[2].np.y26,FIN.depts[2].rev.y26).toFixed(1)}%</b> (алдагдал ${sar(FIN.depts[2].np.y26)} сая ₮). Жилийн цэвэр ашгийн таамаг төлөвлөгөөний ${Math.round(C.np.f26f/C.np.f26p*100)}%.`,o:["АТМ үйлчилгээг өргөтгөх","AI & IT-ийн үнэ, гэрээг шинэчлэх","Ухаалаг төхөөрөмжийн багцыг цэгцлэх"],src:"Key indicator → Хэлтсүүд, Odoo 19 → CostEntry"},
+   {q:"Нэг хүнээс хамаарсан эрсдэл байна уу?",s:"a",m:`<b>1 программ менежер</b> ${PROJ.length} төсөлд, <b>2 дизайнер</b> бүх төсөлд. Аль нэг нь гарвал портфель бүхэлдээ удаашрана.`,o:["Орон тоо нэмж батлах","Орлон гүйцэтгэгч томилох","Гадаад гэрээт нөөц"],src:"Odoo 19 → Employee, Position"},
+   {q:"Аль албаны даргатай гүйцэтгэлийн хурал хийх вэ?",s:"r",m:`Групп KPI ${groupScore.toFixed(1)}. Хамгийн бага: <b>${[...DEPTS].sort((a,b)=>a.score-b.score).slice(0,2).map(d=>d.name+" "+d.score.toFixed(0)).join(", ")}</b>.`,o:["Сарын review","Сайжруулалтын төлөвлөгөө шаардах","Зорилтыг дахин тохируулах"],src:"Metric layer → Department KPI"}]},
+ cfo:{lab:"CFO",who:"Санхүү хариуцсан захирал",focus:"Ашиг, алдагдал, төлөвлөгөөний биелэлт, эргэлтийн хөрөнгө, төслийн зардал",secs:["dec","fin","budget","wc","bonus","port","kci","depts"],
+  stats:()=>{const B=FIN.bs,s1=vs(C.rev.y26,C.rev.y26p),s2=vs(C.np.y26,C.np.y26p),mA=npm(C.np.y26,C.rev.y26),mP=npm(C.np.y26p,C.rev.y26p);return[
+   ["Борлуулалт (өссөн)",sar(C.rev.y26)+" сая","Төлөвлөгөөний "+s1[1],s1[0]],["Цэвэр ашиг (өссөн)",sar(C.np.y26)+" сая","Төлөвлөгөөний "+s2[1],s2[0]],
+   ["Цэвэр маржин",mA.toFixed(1)+"%","Төлөвлөгөө "+mP.toFixed(1)+"%",mA>=mP?"g":"r"],["Жилийн цэвэр ашгийн таамаг",sar(C.np.f26f)+" сая","Төлөвлөгөөний "+Math.round(C.np.f26f/C.np.f26p*100)+"%","r"],
+   ["Авлага",sar(B.ar)+" сая",Math.round(B.ar_rel/B.ar*100)+"% нь холбоотой тал","a"],["IT төслийн таамаг хэтрэлт","+"+fm(OVR)+" сая","Портфелийн CPI "+portCPI.toFixed(2),"r"]]},
+  dec:()=>{const ai=FIN.depts[2],B=FIN.bs,w=[...PROJ].sort((a,b)=>(eac(b)-b.bud)-(eac(a)-a.bud)).slice(0,3);return[
+   {q:"AI & IT хөгжүүлэлтийн алдагдлыг хэрхэн зогсоох вэ?",s:"r",m:`Өссөн цэвэр алдагдал <b>${sar(ai.np.y26)} сая ₮</b> (төлөвлөгөө ${sar(ai.np.y26p)}). Ахиуц ашиг ${sar(ai.cm.y26)} сая, борлуулалт төлөвлөгөөний ${Math.round(ai.rev.y26/ai.rev.y26p*100)}%. Ажилтан ${ai.hc.y26} (төл. ${ai.hc.y26p}).`,o:["Гэрээний үнийг шинэчлэх","Ашиггүй чиглэлийг хаах","Групп дотоод үйлчилгээг chargeback болгох"],src:"Key indicator → AI & IT хэлтэс, Odoo 19 → CostEntry"},
+   {q:"Жилийн төлөвлөгөөг шинэчлэх үү, 4-р улиралд нөхөх үү?",s:"r",m:`Жилийн таамаг: борлуулалт <b>${sar(C.rev.f26f)}</b> / ${sar(C.rev.f26p)} сая (${Math.round(C.rev.f26f/C.rev.f26p*100)}%), цэвэр ашиг <b>${sar(C.np.f26f)}</b> / ${sar(C.np.f26p)} сая (${Math.round(C.np.f26f/C.np.f26p*100)}%).`,o:["Төлөвлөгөөг шинэчилж батлуулах","4-р улиралд борлуулалт хурдасгах","Удирдлагын зардлыг хязгаарлах"],src:"Key indicator → Нэгтгэл (ХБГ)"},
+   {q:"Холбоотой талын авлагыг хэрхэн бууруулах вэ?",s:"a",m:`Авлага <b>${sar(B.ar)} сая ₮</b>, үүнээс холбоотой талаас ${sar(B.ar_rel)} (${Math.round(B.ar_rel/B.ar*100)}%), компани хооронд ${sar(B.ar_ic)}. Мөнгөн урсгалд шууд нөлөөлнө.`,o:["Групп дотоод тооцоог хаах (netting)","Төлбөрийн хугацаа тогтоох","Сар бүр тулгалт хийх"],src:"Баланс → Авлага, Odoo 19 → account.move"},
+   {q:"Бараа материал ба дуусаагүй үйлдвэрлэлийг яах вэ?",s:"a",m:`Бараа материал <b>${sar(B.inv)} сая ₮</b>, нөөц ${B.invdays} хоног. Дуусаагүй үйлдвэрлэл ${sar(B.wip)} сая — гүйцэтгэсэн боловч нэхэмжлээгүй ажил байж болно.`,o:["Удаан эргэлттэй барааг хямдруулах","WIP-ийг нэхэмжлэх","Захиалгын хэмжээг багасгах"],src:"Баланс → Бараа материал"},
+   {q:"IT төслүүдэд нэмэлт төсөв батлах уу, хамрах хүрээг багасгах уу?",s:"r",m:`Одоогийн CPI-аар портфель <b>+${fm(OVR)} сая ₮</b> хэтрэх таамагтай. Хамгийн их: ${w.map(p=>p.n+" +"+fm(eac(p)-p.bud)).join(", ")}.`,o:["Нэмэлт төсөв батлах","Хамрах хүрээг багасгах","Үе шаттай санхүүжүүлэх"],src:"Jira → Worklog, Odoo 19 → CostEntry"},
+   {q:"Хөрөнгө оруулалтын төлөвлөгөөг хэрэгжүүлж байна уу?",s:"b",m:`Өссөн дүнгээр <b>${sar(C.capex.y26)} сая ₮</b>, жилийн төлөвлөгөө ${sar(C.capex.f26p)}. Хөгжүүлэлтийн цагийг (Odoo 19, TBG Life) капиталжуулах эсэхийг шийднэ.`,o:["CAPEX болгох","OPEX-оор үлдээх","Аудитортой тохирох"],src:"Key indicator → Хөрөнгө оруулалт, Jira → Worklog"}]}},
+ cto:{lab:"CTO",who:"Технологи хариуцсан захирал",focus:"Хүргэлтийн хурд ба чанар (DORA), код хянах урсгал, CI/CD, аюулгүй байдал, repo засаглал, багийн бүтэц",secs:["dec","eng","org","port","kpi","kci","src"],
+  stats:()=>{const E=E30;return[["Production deploy",E.dep,(E.dep/30).toFixed(1)+" / өдөр · 30 хоног","g"],["Merge request",E.mrm+" / "+E.mro,"Merged / нээгдсэн · "+Math.round(E.mrm/E.mro*100)+"%"],["Lead time",(E.lead/24).toFixed(1)+" хоног","DORA: "+DORA_L[doraLv.lead(E.lead)][1],doraLv.lead(E.lead)<=1?"g":"a"],["Change failure",E.cfr.toFixed(1)+"%","DORA: "+DORA_L[doraLv.cfr(E.cfr)][1],E.cfr<=10?"g":"a"],["Repository",E.repos,"+"+E.nw+" шинэ · "+E.stale+" идэвхгүй"],["Critical vuln",E.vc,E.vh+" high · GitLab Ultimate","r"]]},
+  dec:()=>{const E=E30,k=RG.find(r=>r.k==="kfc-ph"),lg=RG.find(r=>r.k==="legacy");return[
+   {q:"CI runner-ийн багтаамжийг нэмэх үү?",s:"r",m:`Сарын runner минут <b>48,200 / 50,000 (96%)</b>. Pipeline-ийн медиан хүлээлт 4.1 мин болж өссөн, 2 долоо хоногийн дараа лимитэд хүрнэ.`,o:["Self-hosted autoscale runner (EKS)","Shared минут нэмж худалдах","Cache, parallel тохиргоог оновчлох"],src:"GitLab → /ci/runners, Usage quotas"},
+   {q:"KFC / Pizza Hut-д quality gate тавих уу?",s:"r",m:`CFR <b>${k.cfr}%</b>, lead time ${(k.lead/24).toFixed(1)} хоног, coverage ${k.cov}%, pipeline амжилт ${k.ps}%. Бусад бүлгээс хамгийн муу DORA түвшин.`,o:["Coverage ≥ 60% merge-ийн нөхцөл","2 approval заавал","Хэвээр, хяналт нэмэх"],src:"GitLab → /dora/metrics, MR approval rules"},
+   {q:"Legacy repo-уудыг архивлах уу?",s:"a",m:`Legacy бүлэгт <b>${lg.repos} repo</b>, үүнээс ${lg.stale} нь 90+ хоног идэвхгүй, гэхдээ <b>${lg.vc} critical, ${lg.vh} high</b> эмзэг байдалтай.`,o:["Archive + read-only","Шилжүүлж засах","Эрсдэлийг хүлээн зөвшөөрөх"],src:"GitLab → /projects?last_activity, /vulnerabilities"},
+   {q:"Repo засаглалыг групп түвшинд албадах уу?",s:"a",m:`CODEOWNERS <b>61%</b>, protected branch 92%, CI идэвхтэй 84%, signed commit 37%. SDLC VOL 02 стандартаас хоцорч байна.`,o:["Compliance framework + pipeline","Шинэ repo-д template заавал","Улирал бүр аудит"],src:"GitLab → Compliance center"},
+   {q:"Tech lead-гүй, BA-гүй төслүүдийг яах вэ?",s:"r",m:`TL-гүй: <b>${noTL.map(p=>p.n).join(", ")}</b>. BA-гүй: ${noBA.map(p=>p.n).join(", ")}.`,o:["Одоогийн TL-д нэмэх","BRD батлагдтал эхлүүлэхгүй","Squad бүтэц рүү шилжих"],src:"Ontology: Project → Employee (role)"},
+   {q:"Review ачааллыг тэнцвэржүүлэх үү?",s:"a",m:`Tech lead-ууд нийт review-ийн <b>${Math.round(ENGR.filter(e=>e.k==="tl").reduce((s,e)=>s+e.rev,0)/ENGR.reduce((s,e)=>s+e.rev,0)*100)}%</b>-ийг хийж байна. Эхний review хүртэл медиан 5.2 ц, p90 26 ц.`,o:["Ахлах инженерүүдийг CODEOWNERS-д нэмэх","Review SLA 24 ц","Хос програмчлал"],src:"GitLab → MR approvals, notes"}]}},
+ chro:{lab:"CHRO",who:"Хүний нөөцийн захирал",focus:"Ачаалал, ур чадвар, орон тоо, карьер",secs:["dec","bonus","org","load","emp","depts"],
+  stats:()=>[["Ажилтан",TOTAL,"7 алба"],["Хэт ачаалалтай",over.length,"110%-иас дээш","r"],["Сул ачаалалтай",EMP.filter(e=>e.load<70).length,"70%-иас доош","a"],["Ажилтны урсгал","1.4%","Сарын · зорилт ≤ 1.5%","g"],["Сургалтын цаг","6.2 ц","Хүнд · зорилт ≥ 8","a"],["Орон тооны зөрүү","+1","Төслийн менежер 7 → 8"]],
+  dec:()=>[
+   {q:"Хэт ачаалалтай хүмүүсийг яаж тайлах вэ?",s:"r",m:`Төслийн удирдлагын алба-1-д <b>${pmoOver.length} хүн</b> 110%-иас дээш: ${pmoOver.slice(0,4).map(e=>e.nm.split(" ")[0]).join(", ")}${pmoOver.length>4?"…":""}. 3 сар дараалбал гүйцэтгэл, чанар буурдаг.`,o:["Ажлыг дахин хуваарилах","Нөхөн амралт","Түр туслах томилох"],src:"Jira → Worklog, Odoo 19 → Attendance"},
+   {q:"Аль чиглэлд орон тоо, сургалт хэрэгтэй вэ?",s:"a",m:`Дизайнер 2 хүн 14 төсөлд, программ менежер 1. Мобайл, ABAP чиглэлд 3+ түвшний хүн цөөн.`,o:["Дизайнер 1 орон тоо","Чиглэсэн сургалт","Pair work"],src:"Ontology: Employee → Skill"},
+   {q:"Орон тооны бүтэц бодит байдалтай таарч байна уу?",s:"a",m:`Бүтцэд "Төслийн менежер — 7" гэсэн ч <b>8 хүн</b> ажиллаж байна. Ахлах : энгийн инженер = 10 : 10.`,o:["Орон тоог 8 болгох","Нэгийг программ менежерийн туслах болгох","Хэвээр"],src:"Odoo 19 → Position vs Employee"},
+   {q:"Бонусын санг хэрхэн хуваарилах вэ?",s:"a",m:(()=>{const all=EMP.map(bon),T=sum(all,x=>x.t),B=sum(all,x=>x.b);return `Жилийн цэвэр ашгийн таамаг төлөвлөгөөний <b>${Math.round(fcAtt()*100)}%</b> → компанийн коэф. ${fc().toFixed(2)}. Урьдчилсан сан <b>${sar(B)} сая ₮</b> (зорилтын ${Math.round(B/T*100)}%). AI & IT хэлтэс алдагдалтай тул түүнд хамаарах алба доод хязгаараар (${BP.floor}) тооцогдож байна.`})(),o:["Бодлогоор нь олгох","Хэлтсийн жинг багасгаж хувь хүнийх рүү шилжүүлэх","4-р улирлын үр дүнгээр эцэслэх"],src:"Key indicator → Цэвэр ашиг (ХБГ), Metric layer → Employee KPI"},
+   {q:"Хэнийг дэвшүүлэх бэлэн байна вэ?",s:"b",m:`Энгийн инженерүүдээс KPI оноо 90+ ба ачаалал хэвийн <b>${pmos.filter(e=>e.k==="se"&&e.score>=88).length} хүн</b> ахлах түвшинд бэлэн байж болно.`,o:["Улирлын үнэлгээнд оруулах","Mentor томилох","Хүлээх"],src:"Metric layer → Employee KPI"}]},
+ head:{lab:"Алба дарга",who:"Төслийн удирдлагын албаны дарга",focus:"Төсөл хуваарилалт, PM/BA/TL ачаалал, хоцрогдол, асуудал",secs:["dec","org","port","eng","bonus","emp","kpi","load"],
+  stats:()=>[["Албаны ажилтан",pmos.length,"8 үүргийн бүлэг"],["Идэвхтэй төсөл",PROJ.length,"Программ менежер 1"],["PM-ийн дундаж төсөл",(sum(pmLoad,x=>x.c)/pmLoad.length).toFixed(1),"Дүрэм ≤ 3",pmOver.length?"a":"g"],["BA-гүй төсөл",noBA.length,"BRD эрсдэлтэй","r"],["Хугацаандаа",Math.round(avg(pmos.map(e=>e.ot)))+"%","Хувь хүний ажлаар"],["Хэт ачаалал",pmoOver.length,"110%-иас дээш",pmoOver.length?"r":"g"]],
+  dec:()=>[
+   {q:"Аль PM-ийн төслийг дахин хуваарилах вэ?",s:"r",m:`"1 PM ≤ 3 төсөл" дүрмийг зөрчсөн: <b>${pmOver.map(x=>x.n.split(" ")[0]+" "+x.c).join(", ")}</b>. Сайханбаяр, Уянга, Хонгорзул тус бүр 1 төсөлтэй.`,o:["Fleet, RFID-г шилжүүлэх","Siro-г нэг PM-д төвлөрүүлэх","Хэвээр, хяналт нэмэх"],src:"Jira → Project lead"},
+   {q:"Аль төсөлд BA томилох вэ?",s:"r",m:`BA-гүй: <b>${noBA.map(p=>p.n).join(", ")}</b>. MEDON-ийн BA тодорхойгүй (?). Батсүх 7 сэдэвт хуваагдсан.`,o:["Батсүхийн ачааллыг хуваах","Шинэ BA","PM-ээр BRD бичүүлэх"],src:"Ontology: Project → BA"},
+   {q:"Хоцорсон төслүүдэд ямар арга хэрэглэх вэ?",s:"a",m:`${riskP.map(p=>p.n).join(", ")}. KFC/Pizza Hut — хамрах хүрээ өөрчлөгдсөн; MEDON, Кемпински — шаардлага тодорхойгүй.`,o:["CCB, scope freeze","2 долоо хоногийн sprint, MVP","Захиалагчтай 7 хоног тутам синк"],src:"Jira → Issue, Change request"},
+   {q:"Нэг TL-д хэдэн төсөл байх нь зөв бэ?",s:"a",m:`Сандагдорж 3 төсөл (Cloud, Fleet, RFID), Ганхуу 3. Даваадорж, Гандаваа 2. TL-гүй 2 төсөл байна.`,o:["TL ≤ 2 төсөл дүрэм","Ахлах инженерийг TL болгох","Хэвээр"],src:"Ontology: Project → Tech lead"}]}
+};
+
+/* ---------- Render ---------- */
+let role="ceo",period="m",dept="all",shown=12,showAll=false,selP=null;
+const $=id=>document.getElementById(id);
+const fmt=(v,u)=>(Number.isInteger(v)?v:v.toFixed(v<10?1:2).replace(/\.?0+$/,""))+u;
+const col=s=>({g:"var(--green)",a:"var(--amber)",r:"var(--red)",b:"var(--blue)"})[s];
+const sc=v=>v>=90?"g":v>=80?"b":v>=70?"a":"r";
+const D=id=>DEPTS.find(d=>d.id===id);
+const ROMAN=["I","II","III","IV","V","VI","VII","VIII","IX","X","XI"];
+const ORDER=["dec","eng","fin","budget","wc","bonus","port","org","depts","kpi","load","emp","trend","kci","src"];
+
+$("roles").innerHTML=Object.entries(ROLES).map(([k,r])=>`<button role="tab" data-r="${k}">${r.lab}</button>`).join("");
+const opts='<option value="all">Бүх алба</option>'+DEPTS.map(d=>`<option value="${d.id}">${d.name}</option>`).join("");
+$("dept").innerHTML=opts;$("empDept").innerHTML=opts;
+
+function layout(){
+  const R0=ROLES[role],box=$("sections"),list=showAll?ORDER:R0.secs;
+  document.querySelectorAll("#sections > section").forEach(s=>s.hidden=!list.includes(s.dataset.s));
+  list.forEach((id,i)=>{const s=box.querySelector(`[data-s="${id}"]`);box.appendChild(s);s.querySelector(".num").textContent=ROMAN[i];});
+  ORDER.filter(id=>!list.includes(id)).forEach(id=>box.appendChild(box.querySelector(`[data-s="${id}"]`)));
+}
+function render(){
+  const R0=ROLES[role];
+  document.querySelectorAll("#roles button").forEach(b=>{b.classList.toggle("on",b.dataset.r===role);b.setAttribute("aria-selected",b.dataset.r===role)});
+  $("who").innerHTML=`<b>${R0.who}</b><span>${R0.focus}</span>`;
+  $("metaText").textContent=`${TOTAL} ажилтан, 7 алба · ${TREND[period].per}`;
+  const dl=R0.dec(),reds=dl.filter(d=>d.s==="r");
+  $("alert").innerHTML=reds.length?`<b>${R0.lab}-д шийдвэр хүлээж буй ${reds.length} асуудал:</b> `+reds.map(d=>d.q).join(" · "):"<b>Шийдвэр хүлээж буй яаралтай асуудал алга.</b>";
+  $("stats").innerHTML=R0.stats().map(s=>`<div class="stat"><div class="l">${s[0]}</div><div class="v ${s[3]||""}">${s[1]}</div><div class="s">${s[2]}</div></div>`).join("");
+  $("decTitle").textContent="Шийдвэрийн самбар — "+R0.lab;
+  $("decs").innerHTML=dl.map(d=>`<div class="dec" style="--c:${col(d.s)}"><div class="top"><div class="q">${d.q}</div><span class="pill ${d.s}">${{r:"Яаралтай",a:"Анхаарах",b:"Төлөвлөх",g:"Хэвийн"}[d.s]}</span></div>
+    <div class="m">${d.m}</div><h4>Шийдвэрийн сонголт</h4><div class="opts">${d.o.map(o=>`<span class="opt">${o}</span>`).join("")}</div><div class="src">Эх сурвалж: ${d.src}</div></div>`).join("");
+  layout();renderEng();renderFin();renderBudget();renderWC();renderBonus();renderPort();renderOrg();renderDepts();renderKpi();renderLoad();renderEmp();renderTrend();renderKci();renderSrc();
+}
+
+function finChart(el,act,plan,py){
+  const W=560,H=230,p={l:46,r:10,t:14,b:26},n=12,vals=[...act,...plan,...py].filter(v=>v!=null).map(v=>v/1e6);
+  let mx=Math.max(...vals,0),mn=Math.min(...vals,0);const pad=(mx-mn)*.08;mx+=pad;if(mn<0)mn-=pad;
+  const step=(()=>{const r=(mx-mn)/4,m=Math.pow(10,Math.floor(Math.log10(r)));return [1,2,2.5,5,10].map(k=>k*m).find(k=>k>=r)})();
+  mx=Math.ceil(mx/step)*step;mn=Math.floor(mn/step)*step;
+  const bw=(W-p.l-p.r)/n,X=i=>p.l+i*bw+bw/2,Yv=v=>p.t+(mx-v)/(mx-mn)*(H-p.t-p.b);
+  let g=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Сарын график">`;
+  for(let v=mn;v<=mx+1e-9;v+=step)g+=`<line x1="${p.l}" x2="${W-p.r}" y1="${Yv(v)}" y2="${Yv(v)}" stroke="${v===0?"var(--faint)":"var(--line)"}"/><text x="${p.l-6}" y="${Yv(v)+3.5}" font-size="10" fill="var(--faint)" text-anchor="end">${Math.round(v).toLocaleString("en-US")}</text>`;
+  act.forEach((v,i)=>{if(v==null)return;const a=v/1e6,y0=Yv(0),y1=Yv(a),fc=i<FIN.month;
+    g+=`<rect x="${X(i)-bw*.3}" y="${Math.min(y0,y1)}" width="${bw*.6}" height="${Math.max(1,Math.abs(y1-y0))}" rx="2" fill="${a<0?"var(--red)":fc?"var(--navy)":"var(--blue-bg)"}" stroke="${fc?"none":"var(--blue)"}" stroke-dasharray="${fc?"":"3 2"}"><title>${MN[i]}-р сар: ${sar(v)} сая ₮ ${fc?"(гүйцэтгэл)":"(ХБГ)"}</title></rect>`});
+  const line=(arr,c,d)=>`<polyline points="${arr.map((v,i)=>v==null?"":X(i)+","+Yv(v/1e6)).filter(Boolean).join(" ")}" fill="none" stroke="${c}" stroke-width="2" ${d?'stroke-dasharray="5 4"':""}/>`;
+  g+=line(plan,"var(--amber)",true)+line(py,"var(--faint)");
+  py.forEach((v,i)=>{if(v!=null)g+=`<circle cx="${X(i)}" cy="${Yv(v/1e6)}" r="2.5" fill="var(--faint)"/>`});
+  MN.forEach((m,i)=>g+=`<text x="${X(i)}" y="${H-8}" font-size="10.5" fill="${i===FIN.month-1?"var(--ink)":"var(--mute)"}" font-weight="${i===FIN.month-1?600:400}" text-anchor="middle">${m}</text>`);
+  el.innerHTML=g+`</svg><div class="flegend"><span><i style="background:var(--navy)"></i>2026 гүйцэтгэл</span><span><i style="background:var(--blue-bg);outline:1px dashed var(--blue)"></i>ХБГ</span><span><i style="background:var(--amber);height:2px"></i>Төлөвлөгөө</span><span><i style="background:var(--faint);height:2px"></i>2025</span></div>`;
+}
+function renderFin(){
+  const [A,P,Py]=FM[finMode];
+  $("finSub").textContent=FLAB[finMode]+" · гүйцэтгэлийг төлөвлөгөө ба өмнөх онтой харьцуулсан";
+  document.querySelectorAll("#finMode button").forEach(b=>b.classList.toggle("on",b.dataset.f===finMode));
+  const card=(l,r,u)=>{const [s,t]=vs(r[A],r[P]);return `<div class="fk"><div class="l">${l}</div><div class="v ${r[A]<0?"neg":""}">${sar(r[A])} <small>${u||"сая ₮"}</small></div><div class="c"><span class="pill ${s}">Төл. ${t}</span><span>2025: ${yoy(r[A],r[Py])}</span></div></div>`};
+  const m=(np,rev)=>npm(np,rev);
+  const mA=m(C.np[A],C.rev[A]),mP=m(C.np[P],C.rev[P]),mY=m(C.np[Py],C.rev[Py]);
+  const gA=m(C.gp[A],C.rev[A]),gP=m(C.gp[P],C.rev[P]),gY=m(C.gp[Py],C.rev[Py]);
+  const mc=(l,a,pp,y)=>`<div class="fk"><div class="l">${l}</div><div class="v">${a.toFixed(1)}<small>%</small></div><div class="c"><span class="pill ${a>=pp?"g":a>=pp-2?"a":"r"}">Төл. ${pp.toFixed(1)}%</span><span>2025: ${y.toFixed(1)}%</span></div></div>`;
+  const hc=C.hc;
+  $("finKpis").innerHTML=card("Борлуулалт",C.rev)+card("Нийт ашиг",C.gp)+card("EBIT",C.ebit)+card("Цэвэр ашиг",C.np)+
+    mc("Нийт ашгийн маржин",gA,gP,gY)+mc("Цэвэр ашгийн маржин",mA,mP,mY)+
+    `<div class="fk"><div class="l">Хөрөнгө оруулалт</div><div class="v">${sar(finMode==="m"?C.capex.y26:C.capex[A])} <small>сая ₮</small></div><div class="c"><span class="pill b">Жилийн төл. ${sar(C.capex.f26p)}</span><span>${finMode==="m"?"Өссөн дүнгээр":""}</span></div></div>`+
+    `<div class="fk"><div class="l">Ажилтны тоо</div><div class="v">${hc[A]} <small>хүн</small></div><div class="c"><span class="pill ${hc[A]<=hc[P]?"g":"a"}">Төл. ${hc[P]}</span><span>2025: ${hc[Py]}</span></div></div>`;
+  finChart($("chRev"),C.rev.f26,C.rev.p26,C.rev.a25);finChart($("chNp"),C.np.f26,C.np.p26,C.np.a25);
+  $("finDeptSub").textContent=FLAB[finMode]+" · сая ₮";
+  const drow=(nm,r,tot)=>{const [s1,t1]=vs(r.rev[A],r.rev[P]),[s2,t2]=vs(r.np[A],r.np[P]),mg=npm(r.np[A],r.rev[A]),h=r.hc[A],rpp=r.rev[A]/h/(finMode==="m"?1:finMode==="y"?FIN.month:12);
+    return `<tr class="${tot?"tot":""}"><td>${tot?nm:"<b>"+nm+"</b>"}</td><td class="rt">${sar(r.rev[A])}</td><td><span class="pill ${s1}">${t1}</span></td><td class="rt">${sar(r.gp[A])}</td><td class="rt ${r.cm[A]<0?"neg":""}">${sar(r.cm[A])}</td><td class="rt ${r.np[A]<0?"neg":""}">${sar(r.np[A])}</td><td><span class="pill ${s2}">${t2}</span></td><td class="rt ${mg<0?"neg":""}">${mg.toFixed(1)}%</td><td class="rt">${h} / ${r.hc[P]}</td><td class="rt">${(rpp/1e6).toFixed(1)} сая</td></tr>`};
+  $("finDept").innerHTML=FIN.depts.map(d=>drow(d.s,d)).join("")+drow("Нэгтгэл",C,true);
+  const mode=finMode==="m"?"m":finMode==="y"?"y":"f",us=FIN.units.map(u=>({...u,r:uSum(u.rev.f26,mode),rp:uSum(u.rev.p26,mode),n2:uSum(u.np.f26,mode)})),mxr=Math.max(...us.map(u=>u.r),1);
+  let ug="",last="";us.forEach(u=>{if(u.g!==last){ug+=`<div class="ugrp">${u.g}</div>`;last=u.g}const [s]=vs(u.r,u.rp);
+    ug+=`<div class="urow"><span>${u.n}</span><div class="bar" title="Төлөвлөгөө ${sar(u.rp)} сая"><i style="width:${Math.max(0,u.r)/mxr*100}%;background:${col(s)}"></i></div><span style="text-align:right">${sar(u.r)}</span><span class="${u.n2<0?"neg":""}" style="text-align:right;font-weight:600">${sar(u.n2)}</span></div>`});
+  $("finUnits").innerHTML=`<div class="urow muted" style="padding-top:0"><span></span><span>Борлуулалт (өнгө: төлөвлөгөөнөөс)</span><span style="text-align:right">Борлуулалт</span><span style="text-align:right">Цэвэр ашиг</span></div>`+ug;
+  const B=FIN.bs;
+  $("finBs").innerHTML=[["Нийт хөрөнгө",sar(B.assets),"Эргэлтийн "+sar(B.ca)],["Эргэлтийн харьцаа",(B.ca/B.cl).toFixed(2),"Эргэлтийн хөрөнгө / өр төлбөр"],["Өр / өмч",(B.liab/B.eq).toFixed(2),"Өмч "+sar(B.eq)+" · урт хугацаат өргүй"],["Авлага",sar(B.ar),Math.round(B.ar_rel/B.ar*100)+"% нь холбоотой талаас"],["Бараа материал",sar(B.inv),"Нөөц "+B.invdays+" хоног · дуусаагүй "+sar(B.wip)],["Урьдчилж олсон орлого",sar(B.defrev),"Гэрээлсэн, гүйцэтгээгүй"],["Цалингийн зардал (өссөн)",sar(B.payroll),"Төлөвлөгөө "+sar(B.payroll_p)],["Нэг ажилтны цалин",(B.pay_pp/1e6).toFixed(2)+" сая","Төлөвлөгөө "+(B.pay_pp_p/1e6).toFixed(2)+" сая"]]
+    .map(x=>`<div><span>${x[0]}</span><b>${x[1]}</b><em>${x[2]}</em></div>`).join("");
+  $("finAlerts").innerHTML=finAlerts().map(o=>`<div class="ob ${o[0]}"><b>${o[1]}</b>${o[2]}</div>`).join("");
+}
+function finAlerts(){
+  const ai=FIN.depts[2],atm=FIN.depts[1],sm=FIN.depts[0],B=FIN.bs;
+  return [
+   ["r","AI & IT хөгжүүлэлт алдагдалтай",`Өссөн цэвэр алдагдал ${sar(ai.np.y26)} сая ₮ (төлөвлөгөө ${sar(ai.np.y26p)}). Ахиуц ашиг ${sar(ai.cm.y26)} сая.`],
+   ["r","Жилийн цэвэр ашгийн таамаг",`${sar(C.np.f26f)} сая ₮ — төлөвлөгөөний ${Math.round(C.np.f26f/C.np.f26p*100)}% (${sar(C.np.f26p)}).`],
+   ["a","Борлуулалт төлөвлөгөөнөөс доогуур",`Өссөн дүн ${sar(C.rev.y26)} сая ₮ — ${Math.round(C.rev.y26/C.rev.y26p*100)}%. Жилийн таамаг ${Math.round(C.rev.f26f/C.rev.f26p*100)}%.`],
+   ["a","Холбоотой талын авлага",`Авлагын ${Math.round(B.ar_rel/B.ar*100)}% (${sar(B.ar_rel)} сая ₮) холбоотой талаас — групп дотоод тооцоо.`],
+   ["a","Ухаалаг төхөөрөмжийн маржин",`Цэвэр маржин ${npm(sm.np.y26,sm.rev.y26).toFixed(1)}% (2025: ${npm(sm.np.y25,sm.rev.y25).toFixed(1)}%), борлуулалт төлөвлөгөөний ${Math.round(sm.rev.y26/sm.rev.y26p*100)}%.`],
+   ["g","АТМ засвар үйлчилгээ давуулсан",`Өссөн цэвэр ашиг ${sar(atm.np.y26)} сая ₮ — төлөвлөгөөний ${Math.round(atm.np.y26/atm.np.y26p*100)}%, маржин ${npm(atm.np.y26,atm.rev.y26).toFixed(1)}%.`]
+  ];
+}
+
+/* ---------- Жилийн төсөв ---------- */
+function lineChart(el,series,opt){
+  const W=560,H=220,p={l:50,r:10,t:12,b:24},all=series.flatMap(s=>s.v.filter(x=>x!=null));
+  let mx=Math.max(...all,0),mn=Math.min(...all,0);if(opt.min!=null){mn=opt.min;mx=opt.max}const r=(mx-mn)/4||1,m=Math.pow(10,Math.floor(Math.log10(r))),step=[1,2,2.5,5,10].map(k=>k*m).find(k=>k>=r);
+  if(opt.min!=null){mn=opt.min;mx=opt.max}else{mx=Math.ceil(mx/step)*step;mn=Math.floor(mn/step)*step}const n=series[0].v.length,X=i=>p.l+i*(W-p.l-p.r)/(n-1),Yv=v=>p.t+(mx-v)/(mx-mn)*(H-p.t-p.b);
+  let g=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${opt.aria}">`;
+  for(let v=mn;v<=mx+1e-9;v+=step)g+=`<line x1="${p.l}" x2="${W-p.r}" y1="${Yv(v)}" y2="${Yv(v)}" stroke="${Math.abs(v)<1e-9?"var(--faint)":"var(--line)"}"/><text x="${p.l-6}" y="${Yv(v)+3.5}" font-size="10" fill="var(--faint)" text-anchor="end">${opt.fmt(v)}</text>`;
+  if(opt.band)g+=`<polygon points="${opt.band.map(b=>X(b[0])+","+Yv(b[2])).join(" ")} ${opt.band.slice().reverse().map(b=>X(b[0])+","+Yv(b[1])).join(" ")}" fill="var(--blue)" opacity=".12"/>`;
+  if(opt.hline!=null)g+=`<line x1="${p.l}" x2="${W-p.r}" y1="${Yv(opt.hline)}" y2="${Yv(opt.hline)}" stroke="var(--red)" stroke-dasharray="4 4"/>`;
+  series.forEach(s=>{const pts=s.v.map((v,i)=>v==null?null:[X(i),Yv(v)]);
+    const seg=(a,b)=>pts.slice(a,b).filter(Boolean).map(q=>q.join(",")).join(" ");
+    if(s.cut!=null){g+=`<polyline points="${seg(0,s.cut)}" fill="none" stroke="${s.c}" stroke-width="2.5"/><polyline points="${seg(s.cut-1,n)}" fill="none" stroke="${s.c}" stroke-width="2.5" stroke-dasharray="5 4"/>`}
+    else g+=`<polyline points="${seg(0,n)}" fill="none" stroke="${s.c}" stroke-width="2" ${s.d?'stroke-dasharray="5 4"':""}/>`;
+    if(s.dots)pts.forEach((q,i)=>{if(q&&(s.cut==null||i<s.cut))g+=`<circle cx="${q[0]}" cy="${q[1]}" r="3" fill="var(--card)" stroke="${s.c}" stroke-width="1.8"/>`});});
+  opt.lab.forEach((l,i)=>g+=`<text x="${X(i)}" y="${H-7}" font-size="10.5" fill="var(--mute)" text-anchor="middle">${l}</text>`);
+  el.innerHTML=g+"</svg>"+(opt.legend||"");
+}
+const cum=a=>{let s=0;return a.map(v=>v==null?null:(s+=v)/1e6)};
+function renderBudget(){
+  const rows=[["Борлуулалтын орлого",C.rev,"hi"],["Борлуулсан бүтээгдэхүүний өртөг",C.cogs,"lo"],["Нийт ашиг",C.gp,"hi"],["Борлуулалт, маркетингийн зардал",C.sm,"lo"],["Ерөнхий удирдлагын зардал",C.ga,"lo"],["Санхүүжилтийн зардал",C.finc,"lo"],["Цэвэр ашиг",C.np,"hi"],["Цалингийн зардал",C.pay,"lo"],["Хөрөнгө оруулалт",C.capex,"lo"]];
+  const st=(a,p,d)=>{if(!p)return"b";const r=a/p;return d==="hi"?(r>=1?"g":r>=.9?"a":"r"):(r<=1?"g":r<=1.1?"a":"r")};
+  const t=FIN.month/12*100;
+  $("budBody").innerHTML=rows.map(([l,r,d])=>{const s=st(r.y26,r.y26p,d),used=r.f26p?r.y26/r.f26p*100:0,df=(r.f26f??0)-(r.f26p??0),good=d==="hi"?df>=0:df<=0,bold=["Нийт ашиг","Цэвэр ашиг"].includes(l);
+    return `<tr class="budrow"${bold?' style="font-weight:600"':""}><td>${l}</td><td class="rt">${sar(r.f26p)}</td><td class="rt">${sar(r.y26p)}</td><td class="rt">${sar(r.y26)}</td><td><span class="pill ${s}">${r.y26p?Math.round(r.y26/r.y26p*100)+"%":"—"}</span></td>
+    <td><div class="barcell"><div class="bar"><i style="width:${Math.min(100,Math.max(0,used))}%;background:${col(s)}"></i><u style="left:${t}%"></u></div><span class="muted" style="min-width:36px;text-align:right">${Math.round(used)}%</span></div></td>
+    <td class="rt">${sar(r.f26f)}</td><td class="rt" style="font-weight:600;color:${good?"var(--green-ink)":"var(--red-ink)"}">${df>0?"+":""}${sar(df)}</td></tr>`}).join("");
+  const cost=["cogs","sm","ga","finc"].reduce((s,k)=>[s[0]+C[k].y26,s[1]+C[k].y26p],[0,0]);
+  $("budMini").innerHTML=`<div class="${C.rev.y26>=C.rev.y26p?"gb":"ab"}"><span>Орлогын төсвийн биелэлт (1–8)</span><b>${Math.round(C.rev.y26/C.rev.y26p*100)}%</b></div>
+   <div class="${cost[0]<=cost[1]?"gb":"rb"}"><span>Зардлын төсвийн ашиглалт (1–8)</span><b>${Math.round(cost[0]/cost[1]*100)}%</b></div>
+   <div class="rb"><span>Жилийн цэвэр ашиг: таамаг / төсөв</span><b>${sar(C.np.f26f)} / ${sar(C.np.f26p)}</b></div>
+   <div><span>Хөрөнгө оруулалтын төсөв ашигласан</span><b>${Math.round(C.capex.y26/C.capex.f26p*100)}%</b></div>`;
+  lineChart($("chCum"),[{v:cum(C.np.f26),c:"var(--navy)",cut:FIN.month,dots:true},{v:cum(C.np.p26),c:"var(--amber)",d:true},{v:cum(C.np.a25),c:"var(--faint)"}],
+    {aria:"Хуримтлагдсан цэвэр ашиг",lab:MN,fmt:v=>Math.round(v).toLocaleString("en-US"),legend:`<div class="flegend"><span><i style="background:var(--navy)"></i>2026 (тасархай: ХБГ)</span><span><i style="background:var(--amber);height:2px"></i>Төсөв</span><span><i style="background:var(--faint);height:2px"></i>2025</span></div>`});
+  $("budDept").innerHTML=FIN.depts.map(d=>{const [s,tx]=vs(d.np.f26f,d.np.f26p);return `<tr><td><b>${d.s}</b></td><td class="rt">${sar(d.rev.f26p)}</td><td class="rt">${sar(d.rev.f26f)}</td><td class="rt ${d.np.f26p<0?"neg":""}">${sar(d.np.f26p)}</td><td class="rt ${d.np.f26f<0?"neg":""}">${sar(d.np.f26f)}</td><td><span class="pill ${s}">${tx}</span></td></tr>`}).join("")+
+    `<tr class="tot"><td>Нэгтгэл</td><td class="rt">${sar(C.rev.f26p)}</td><td class="rt">${sar(C.rev.f26f)}</td><td class="rt">${sar(C.np.f26p)}</td><td class="rt">${sar(C.np.f26f)}</td><td><span class="pill ${vs(C.np.f26f,C.np.f26p)[0]}">${vs(C.np.f26f,C.np.f26p)[1]}</span></td></tr>`;
+}
+/* ---------- Мөнгө, авлага, өглөг ---------- */
+function split(parts){const tot=parts.reduce((s,x)=>s+x[1],0);
+  return `<div class="split">${parts.map(x=>`<i style="width:${x[1]/tot*100}%;background:${x[2]}" title="${x[0]}: ${sar(x[1])} сая ₮">${x[1]/tot>.12?Math.round(x[1]/tot*100)+"%":""}</i>`).join("")}</div><div class="splitl">${parts.map(x=>`<span style="--c:${x[2]}">${x[0]} — ${sar(x[1])}</span>`).join("")}</div>`}
+function renderWC(){
+  const B=FIN.bs,days=FIN.month*30.4,dso=B.ar/(C.rev.y26/days),dpo=B.ap/(C.cogs.y26/days),dio=B.invdays,ccc=dso+dio-dpo;
+  $("wcMini").innerHTML=`<div><span>Цэвэр эргэлтийн капитал</span><b>${sar(B.ca-B.cl)}</b></div><div class="${B.ca/B.cl>=1.5?"gb":"ab"}"><span>Эргэлтийн харьцаа</span><b>${(B.ca/B.cl).toFixed(2)}</b></div>
+   <div class="${(B.ca-B.inv)/B.cl>=1?"gb":"ab"}"><span>Шуурхай харьцаа</span><b>${((B.ca-B.inv)/B.cl).toFixed(2)}</b></div><div class="ab"><span>Мөнгөний мөчлөг</span><b>${Math.round(ccc)} хоног</b></div>`;
+  $("arSub").textContent="Нийт "+sar(B.ar)+" сая ₮";
+  $("arSplit").innerHTML=split([["Борлуулалтын",B.ar_tr,"var(--blue)"],["Компани хооронд",B.ar_ic,"var(--teal)"],["Холбоотой тал",B.ar_rel,"var(--amber)"]]);
+  const ag=[["Хугацаандаа",.42,"var(--green)"],["1–30 хоног",.23,"var(--blue)"],["31–60",.14,"var(--amber)"],["61–90",.10,"var(--amber)"],["90+ хоног",.11,"var(--red)"]];
+  $("arAging").innerHTML=ag.map(a=>`<div class="lrow" style="grid-template-columns:100px 1fr 60px"><span>${a[0]}</span><div class="bar"><i style="width:${a[1]/.42*100}%;background:${a[2]}"></i></div><span class="t">${sar(B.ar*a[1])}</span></div>`).join("");
+  $("apSub").textContent="Богино хугацаат өглөг "+sar(B.ap)+" сая ₮";
+  $("apSplit").innerHTML=split([["Гадаад харилцагч",B.ap_ext,"var(--navy)"],["Дотоод харилцагч",B.ap_dom,"var(--blue)"]])+
+   `<div class="bsg" style="margin-top:12px"><div><span>Урьдчилж олсон орлого</span><b>${sar(B.defrev)}</b><em>Гүйцэтгэх үүрэг (өр)</em></div><div><span>Урьдчилж төлсөн</span><b>${sar(B.prepaid)}</b><em>Нийлүүлэгчид өгсөн урьдчилгаа</em></div></div>`;
+  $("ccc").innerHTML=`<div class="bsg" style="grid-template-columns:repeat(4,1fr)"><div><span>DSO</span><b>${Math.round(dso)}</b><em>авлагын хоног</em></div><div><span>DIO</span><b>${Math.round(dio)}</b><em>нөөцийн хоног</em></div><div><span>DPO</span><b>${Math.round(dpo)}</b><em>өглөгийн хоног</em></div><div class="${ccc>45?"ab":""}" style="${ccc>45?"background:var(--amber-bg)":""}"><span>CCC</span><b>${Math.round(ccc)}</b><em>хоног</em></div></div>`;
+  $("cashNote").innerHTML=`<b>Өгөгдлийн цоорхой:</b> мөнгөн хөрөнгийн үлдэгдэл (Key indicator 4.26) тайланд бөглөгдөөгүй, мөнгөн гүйлгээний тайлан зөвхөн 9-р сарын урьдчилсан дүнтэй. 13 долоо хоногийн мөнгөн урсгалын таамаг гаргахын тулд банкны хуулга ба Odoo 19 journal-ийг lakehouse-д холбох шаардлагатай.`;
+}
+/* ---------- Бонусын таамаг ---------- */
+const BP={months:1.5,thr:70,floor:.5};let bSel=null,bShown=15;
+const FMAP={pmo:2,ai:2,infra:2,atm:1,sup:-1,hr:-1,fin:-1};
+const R2=rng(777);
+const RF={pgm:1.8,tl:1.5,pm:1.3,sse:1.3,ba:1.1,pd:1.15,se:.9};
+const erf=x=>{const t=1/(1+.3275911*Math.abs(x)),y=1-(((((1.061405429*t-1.453152027)*t)+1.421413741)*t-.284496736)*t+.254829592)*t*Math.exp(-x*x);return x>=0?y:-y};
+const Phi=z=>.5*(1+erf(z/Math.SQRT2));
+EMP.forEach(e=>{e.sal=FIN.bs.pay_pp*(RF[e.k]||(/менежер|Ерөнхий|Архитектор/.test(e.role)?1.3:1))*(.85+R2()*.3);
+  const sl=(R2()-.5)*3.2,sd=1.5+R2()*3.5;e.hist=Array.from({length:9},(_,i)=>i===8?e.score:Math.max(40,Math.min(100,e.score-sl*(8-i)+(R2()-.5)*2*sd)));
+  const xs=e.hist.map((_,i)=>i),xm=4,ym=avg(e.hist),Sxx=xs.reduce((s,x)=>s+(x-xm)**2,0),b=xs.reduce((s,x,i)=>s+(x-xm)*(e.hist[i]-ym),0)/Sxx,a=ym-b*xm;
+  const res=Math.sqrt(e.hist.reduce((s,y,i)=>s+(y-(a+b*i))**2,0)/7)||1;e.trend=[a,b];e.pred=Math.max(0,Math.min(100,a+b*11));e.se=res*Math.sqrt(1+1/9+(11-xm)**2/Sxx);e.p85=1-Phi((85-e.pred)/e.se);});
+const fi=s=>s<80?0:s<90?.6+(s-80)/10*.4:s<95?1+(s-90)/5*.1:1.2;
+const fcAtt=()=>C.np.f26f/C.np.f26p;
+const fc=()=>{const a=fcAtt(),t=BP.thr/100;return a<t?0:a<1?.5+(a-t)/(1-t)*.5:Math.min(1.2,a)};
+const fd=id=>{const i=FMAP[id];if(i<0)return 1;const d=FIN.depts[i],a=d.np.f26f/d.np.f26p;return d.np.f26f<0||a<0?BP.floor:Math.max(BP.floor,Math.min(1.2,a))};
+const bon=e=>{const t=e.sal*BP.months;return{t,b:t*fc()*fd(e.d)*fi(e.pred)}};
+function renderBonus(){
+  $("pMonthsV").textContent=BP.months+" сарын цалин";$("pThrV").textContent=BP.thr+"%";$("pFloorV").textContent=BP.floor.toFixed(1);
+  const all=EMP.map(e=>({e,...bon(e)})),T=sum(all,x=>x.t),Bt=sum(all,x=>x.b),elig=all.filter(x=>x.b>0).length;
+  $("bonMini").innerHTML=`<div class="${fc()>=.9?"gb":fc()>0?"ab":"rb"}"><span>Компанийн коэф. (цэвэр ашиг ${Math.round(fcAtt()*100)}%)</span><b>${fc().toFixed(2)}</b></div>
+   <div class="${Bt/T>=.8?"gb":"ab"}"><span>Урьдчилсан сан / зорилт</span><b>${sar(Bt)} / ${sar(T)}</b></div><div><span>Бонус авах таамагтай</span><b>${elig} / ${TOTAL}</b></div><div><span>Дундаж урьдчилсан бонус</span><b>${(Bt/elig/1e6).toFixed(2)} сая</b></div>`;
+  $("bonDept").innerHTML=DEPTS.map(d=>{const xs=all.filter(x=>x.e.d===d.id),i=FMAP[d.id];return `<tr><td><b>${d.name}</b></td><td class="muted">${i<0?"Нэгтгэл (компани)":FIN.depts[i].s}</td><td class="rt"><span class="pill ${fd(d.id)>=1?"g":fd(d.id)>BP.floor?"a":"r"}">${fd(d.id).toFixed(2)}</span></td><td class="rt">${xs.length}</td><td class="rt">${sar(sum(xs,x=>x.t))}</td><td class="rt" style="font-weight:600">${sar(sum(xs,x=>x.b))}</td></tr>`}).join("");
+  const q=$("bq").value.trim().toLowerCase(),f=$("bDept").value;
+  const list=all.filter(x=>(f==="all"||x.e.d===f)&&(!q||(x.e.nm+" "+x.e.role).toLowerCase().includes(q))).sort((a,b)=>b.b-a.b);
+  $("bCount").textContent=list.length+" ажилтан";
+  $("bonBody").innerHTML=list.slice(0,bShown).map(({e,b})=>`<tr class="click ${bSel===e?"sel":""}" tabindex="0" data-i="${EMP.indexOf(e)}"><td><b>${e.nm}</b><div class="muted">${e.role}</div></td><td class="muted">${D(e.d).name}</td><td class="rt">${e.score}</td>
+    <td class="rt">${e.pred.toFixed(0)} <span class="muted">± ${(1.28*e.se).toFixed(0)}</span></td><td><div class="barcell"><div class="bar"><i style="width:${e.p85*100}%;background:${col(e.p85>=.7?"g":e.p85>=.4?"a":"r")}"></i></div><b>${Math.round(e.p85*100)}%</b></div></td>
+    <td class="rt">${fi(e.pred).toFixed(2)}</td><td class="rt" style="font-weight:700">${(b/1e6).toFixed(2)} сая</td></tr>`).join("")||'<tr><td colspan="7" class="muted">Хайлтад тохирох ажилтан алга.</td></tr>';
+  $("bMore").style.display=list.length>bShown?"inline-block":"none";
+  document.querySelectorAll("#bonBody tr[data-i]").forEach(tr=>{const go=()=>{bSel=EMP[+tr.dataset.i];renderBonus()};tr.onclick=go;tr.onkeydown=ev=>{if(ev.key==="Enter")go()}});
+  const e=bSel||list[0]?.e||EMP[0],bb=bon(e);
+  $("bonPName").textContent=e.nm;$("bonPSub").textContent=`${e.role} · ${D(e.d).name} · KPI ≥ 85 болох магадлал ${Math.round(e.p85*100)}%`;
+  const [a,b]=e.trend,proj=Array.from({length:12},(_,i)=>i<8?null:i===8?e.score:Math.max(0,Math.min(100,a+b*i)));
+  const band=[8,9,10,11].map(i=>{const m=i===8?e.score:a+b*i,w=i===8?0:1.28*e.se*Math.sqrt((i-8)/3);return[i,Math.max(0,m-w),Math.min(100,m+w)]});
+  lineChart($("bonSpark"),[{v:[...e.hist,null,null,null],c:"var(--navy)",dots:true},{v:proj,c:"var(--blue)",d:true}],
+    {aria:"Хувь хүний KPI таамаг",lab:MN,min:Math.max(0,Math.floor((Math.min(...e.hist,...band.map(x=>x[1]),80)-5)/10)*10),max:100,fmt:v=>Math.round(v),band,hline:85,legend:`<div class="flegend"><span><i style="background:var(--navy)"></i>1–9 сарын KPI</span><span><i style="background:var(--blue);height:2px"></i>Таамаг</span><span><i style="background:var(--blue);opacity:.25"></i>80% интервал</span><span><i style="background:var(--red);height:2px"></i>Босго 85</span></div>`});
+  $("bonFormula").innerHTML=`Цалин ${(e.sal/1e6).toFixed(2)} сая × ${BP.months} сар × компани ${fc().toFixed(2)} × хэлтэс ${fd(e.d).toFixed(2)} × хувь хүн ${fi(e.pred).toFixed(2)} = <b>${(bb.b/1e6).toFixed(2)} сая ₮</b><br><span class="muted">Хувь хүний коэф. (жилийн эцсийн таамгаар): KPI &lt; 80 → 0 · 80–90 → 0.6–1.0 · 90–95 → 1.0–1.1 · ≥ 95 → 1.2</span>`;
+}
+
+function renderEng(){
+  const E=engAgg(engPer),pf=EP[engPer].lab,dlt={dep:12,push:6,mrm:9,mro:7,repos:4};
+  document.querySelectorAll("#engPer button").forEach(b=>b.classList.toggle("on",+b.dataset.e===engPer));
+  const k=(l,v,s,pill)=>`<div class="fk"><div class="l">${l}</div><div class="v">${v}</div><div class="c">${pill||""}<span>${s}</span></div></div>`;
+  const up=d=>`<span class="pill ${d>=0?"g":"r"}">${d>=0?"+":""}${d}% өмнөхөөс</span>`;
+  $("engKpis").innerHTML=k("Production deploy",E.dep.toLocaleString("en-US"),(E.dep/E.days).toFixed(1)+" / өдөр",up(dlt.dep))+k("Push",E.push.toLocaleString("en-US"),E.commit.toLocaleString("en-US")+" commit",up(dlt.push))+
+   k("Merge request (merged)",E.mrm.toLocaleString("en-US"),"Нээгдсэн "+E.mro.toLocaleString("en-US"),up(dlt.mrm))+k("MR merge хувь",Math.round(E.mrm/E.mro*100)+"%","Хаагдсан, merge-гүй 6%")+
+   k("Нийт repository",E.repos,E.stale+" нь 90+ хоног идэвхгүй")+k("Шинэ repository",E.nw,pf+" · template-ээр "+Math.max(0,E.nw-2))+
+   k("Pipeline амжилт",E.ps.toFixed(1)+"%",Math.round(2940*EP[engPer].f).toLocaleString("en-US")+" pipeline",`<span class="pill ${E.ps>=90?"g":"a"}">Зорилт ≥ 90%</span>`)+k("Идэвхтэй хөгжүүлэгч",E.active+" / "+ENGR.length,"Push хийсэн");
+  const dv=[["Deploy давтамж","Production, өдөрт",(E.dep/E.days).toFixed(1),doraLv.dep(E.dep/E.days),["≥ 1/өдөр","7 хоногт","Сард","< сард"]],
+   ["Lead time for changes","Commit → production",(E.lead/24).toFixed(1)+" хоног",doraLv.lead(E.lead),["< 1 өдөр","< 7 хоног","< 1 сар","> 1 сар"]],
+   ["Change failure rate","Засвар шаардсан deploy",E.cfr.toFixed(1)+"%",doraLv.cfr(E.cfr),["≤ 5%","≤ 10%","≤ 15%","> 15%"]],
+   ["Сэргээх хугацаа","Production incident",E.mttr.toFixed(1)+" ц",doraLv.mttr(E.mttr),["< 1 ц","< 1 өдөр","< 7 хоног","> 7 хоног"]]];
+  $("dora").innerHTML=dv.map(d=>`<div class="dr"><div class="nm">${d[0]}<small>${d[1]}</small></div><div><div class="band">${[3,2,1,0].map(i=>`<span class="${i===d[3]?"on":""}" style="--c:${DORA_L[i][2]}"></span>`).join("")}<em>${[3,2,1,0].map(i=>`<span>${d[4][i]}</span>`).join("")}</em></div></div><div class="val">${d[2]}<div><span class="lv ${DORA_L[d[3]][0]}">${DORA_L[d[3]][1]}</span></div></div></div>`).join("");
+  lineChart($("engAct"),[{v:WK.map(w=>w.mr),c:"var(--navy)",dots:true},{v:WK.map(w=>w.dep),c:"var(--teal)",dots:true}],{aria:"7 хоног тутмын MR ба deploy",lab:WK.map((_,i)=>"W"+(i+27)),fmt:v=>Math.round(v),
+   legend:`<div class="flegend"><span><i style="background:var(--navy)"></i>MR merged</span><span><i style="background:var(--teal)"></i>Production deploy</span></div>`});
+  $("repoSub").textContent=`${E.rg.length} бүлэг · ${E.repos} repository · ${pf}`;
+  $("repoBody").innerHTML=E.rg.map(r=>{const lv=grpLv(r,E.days),sv=(n,c)=>`<span class="sev ${n?c:"z"}">${n}</span>`;
+   return `<tr><td><b>${r.n}</b><div class="muted mono">${r.k}/*</div></td><td>${r.tl}</td><td class="rt">${r.repos}</td><td class="rt">${r.nw?"+"+r.nw:"—"}</td><td class="rt">${r.push.toLocaleString("en-US")}</td><td class="rt">${r.mrm} / ${r.mro}</td><td class="rt">${r.dep||"—"}</td>
+   <td class="rt"><span class="pill ${r.ps>=90?"g":r.ps>=85?"a":"r"}">${r.ps}%</span></td><td class="rt" style="color:${r.cov<40?"var(--red-ink)":r.cov<60?"var(--amber-ink)":"var(--green-ink)"};font-weight:600">${r.cov}%</td><td style="white-space:nowrap">${sv(r.vc,"c")} ${sv(r.vh,"h")}</td>
+   <td class="rt">${r.lead==null?"—":(r.lead/24).toFixed(1)+" хоног"}</td><td class="rt">${r.cfr==null?"—":r.cfr+"%"}</td><td>${lv==null?'<span class="muted">Deploy алга</span>':`<span class="lv ${DORA_L[lv][0]}">${DORA_L[lv][1]}</span>`}</td></tr>`}).join("");
+  $("mrFlow").innerHTML=[["Эхний review хүртэл","5.2 ц","Медиан · p90 26 ц"],["Merge хүртэл","19 ц","Медиан · p90 3.4 хоног"],["MR хэмжээ","140 мөр","Медиан · 18% нь 400+ мөр"],["Approval","1.6 / MR","4% нь review-гүй merge"],["Review сэтгэгдэл","3.1 / MR","Хамгийн их: Odoo 19"],["Нээлттэй MR-ийн нас","4.3 хоног","14 MR 14+ хоног хүлээгдэж буй"]]
+   .map(x=>`<div><span>${x[0]}</span><b>${x[1]}</b><em>${x[2]}</em></div>`).join("");
+  $("pipeSub").textContent=pf+" · GitLab SaaS shared + self-hosted runner";
+  $("pipe").innerHTML=[["Pipeline-ийн медиан хугацаа","11.4 мин","p90 27 мин"],["Runner минут (сар)","48,200 / 50,000","96% ашигласан"],["Хүлээлтийн медиан","4.1 мин","Өмнөх сар 1.8 мин"],["Flaky тест","23","Сүүлийн 30 хоногт"]]
+   .map((x,i)=>`<div${i===1?' style="background:var(--red-bg)"':""}><span>${x[0]}</span><b>${x[1]}</b><em>${x[2]}</em></div>`).join("");
+  $("pipeFail").innerHTML=(()=>{const P=[["test",52,"var(--red)"],["build",21,"var(--amber)"],["lint",14,"var(--blue)"],["deploy",8,"var(--navy)"],["security",5,"var(--teal)"]];return `<div class="split">${P.map(x=>`<i style="width:${x[1]}%;background:${x[2]}">${x[1]>=12?x[1]+"%":""}</i>`).join("")}</div><div class="splitl">${P.map(x=>`<span style="--c:${x[2]}">${x[0]} ${x[1]}%</span>`).join("")}</div>`})();
+  const SC=[["SAST",2,11,34,52,"6 хоног"],["Dependency scanning",3,12,41,30,"9 хоног"],["Container scanning",1,4,18,22,"5 хоног"],["Secret detection",0,2,0,0,"1 хоног"],["DAST",0,0,7,9,"—"]];
+  $("secBody").innerHTML=SC.map(s=>`<tr><td>${s[0]}</td><td class="rt"><span class="sev ${s[1]?"c":"z"}">${s[1]}</span></td><td class="rt"><span class="sev ${s[2]?"h":"z"}">${s[2]}</span></td><td class="rt"><span class="sev ${s[3]?"m":"z"}">${s[3]}</span></td><td class="rt"><span class="sev ${s[4]?"l":"z"}">${s[4]}</span></td><td class="rt">${s[5]}</td></tr>`).join("")+
+   `<tr class="tot"><td>Нийт</td><td class="rt">${SC.reduce((a,s)=>a+s[1],0)}</td><td class="rt">${SC.reduce((a,s)=>a+s[2],0)}</td><td class="rt">${SC.reduce((a,s)=>a+s[3],0)}</td><td class="rt">${SC.reduce((a,s)=>a+s[4],0)}</td><td class="rt">SLA: C ≤ 7, H ≤ 30</td></tr>`;
+  $("gov").innerHTML=[["Protected default branch",92],["CI/CD идэвхтэй",84],["README, тайлбар",78],["CODEOWNERS",61],["Merge-ийн өмнө pipeline заавал",72],["Security scan template",66],["Signed commit",37]]
+   .map(g=>`<div class="gov"><span>${g[0]}</span><div class="bar"><i style="width:${g[1]}%;background:${col(g[1]>=90?"g":g[1]>=70?"a":"r")}"></i></div><span class="t">${g[1]}%</span></div>`).join("");
+  $("contrib").innerHTML=[...ENGR].sort((a,b)=>b.mrm-a.mrm).map(e=>{const f=EP[engPer].f,rr=e.rev/e.mrm;return `<tr><td><b>${e.nm}</b></td><td class="muted">${e.role}</td><td class="mono">${e.grp}</td><td class="rt">${Math.round(e.push*f)}</td><td class="rt">${Math.max(0,Math.round(e.mrm*f))}</td><td class="rt">${Math.round(e.rev*f)}</td>
+   <td class="rt"><span class="pill ${rr>=2?"b":rr>=.8?"g":"a"}">${rr.toFixed(1)}</span></td><td class="rt" style="color:${e.size>400?"var(--red-ink)":"inherit"}">${e.size}</td><td class="rt">${(e.lead/24).toFixed(1)} хоног</td></tr>`}).join("");
+}
+function renderPort(){
+  const cfo=role==="cfo";
+  $("portMini").innerHTML=`<div class="${portSPI>=.9?"gb":"ab"}"><span>Портфелийн SPI</span><b>${portSPI.toFixed(2)}</b></div><div class="${portCPI>=.95?"gb":"ab"}"><span>Портфелийн CPI</span><b>${portCPI.toFixed(2)}</b></div><div class="rb"><span>Эрсдэлтэй (SPI &lt; 0.8)</span><b>${riskP.length} төсөл</b></div><div class="${cfo?"rb":""}"><span>Таамаг хэтрэлт</span><b>+${fm(OVR)} сая ₮</b></div>`;
+  $("portBody").innerHTML=[...PROJ].sort((a,b)=>cfo?cpi(a)-cpi(b):spi(a)-spi(b)).map(p=>{const s=spi(p),c=cpi(p),v=eac(p)-p.bud;
+   return `<tr><td><b>${p.n}</b></td><td class="muted">${p.co}</td><td>${p.pm}</td><td>${p.ba||'<span class="pill r">Байхгүй</span>'}</td><td>${p.tl||'<span class="pill r">Байхгүй</span>'}</td><td><span class="pill b">${p.st}</span></td>
+   <td><div class="barcell"><div class="bar"><i style="width:${p.prog}%;background:${col(sst(s))}"></i></div><span class="muted" style="white-space:nowrap">${p.prog}% / ${p.elap}%</span></div></td>
+   <td><span class="pill ${sst(s)}">${s.toFixed(2)}</span></td><td style="white-space:nowrap">${p.spent} / ${p.bud}</td><td><span class="pill ${sst(c/1.05)}">${c.toFixed(2)}</span></td>
+   <td style="font-weight:600;color:${v>5?"var(--red-ink)":"var(--green-ink)"};white-space:nowrap">${v>0?"+":""}${fm(v)}</td></tr>`}).join("");
+}
+function lc(l){return l>110?"var(--red)":l>100?"var(--amber)":l<70?"var(--faint)":"var(--green)"}
+function renderOrg(){
+  $("org").innerHTML=ORG.map(c=>{const act=c.ppl.length,diff=act!==c.plan;
+   return `<div class="col"><div class="colh"><b>${c.g.replace("Teach","Tech")}</b><span class="${diff?"warn":""}">Орон тоо ${c.plan} · бодит ${act}${diff?" ⚠":""}</span></div>`+
+   c.ppl.map(p=>{const e=pmos.find(x=>x.nm===p[0]);return `<button class="person ${selP===p[0]?"sel":""}" data-person="${p[0]}"><span><span class="nm">${p[0]}</span>${p[1]?`<small>${p[1].length} төсөл/сэдэв</small>`:""}</span><span class="dot" style="background:${lc(e.load)}" title="Ачаалал ${e.load}%"></span></button>`}).join("")+`</div>`}).join("");
+  document.querySelectorAll(".person").forEach(b=>b.onclick=()=>{selP=b.dataset.person;renderOrg();});
+  const e=pmos.find(x=>x.nm===selP)||pmos.find(x=>x.k==="pm"&&x.proj.length===5);
+  $("detail").innerHTML=`<div><h3>${e.nm}</h3><div class="sub">${e.grp} · Төслийн удирдлагын алба-1</div><div>${(e.proj.length?e.proj:["Төсөл Jira-аас хуваарилагдана"]).map(t=>`<span class="chip">${t}</span>`).join("")}</div>
+   <div class="nums"><div><span>Хуваарилсан</span><b>${e.as}</b></div><div><span>Шийдсэн</span><b>${e.done}</b></div><div><span>Хугацаандаа</span><b>${e.ot}%</b></div><div><span>Ачаалал</span><b style="color:${lc(e.load)}">${e.load}%</b></div><div><span>KPI оноо</span><b>${e.score}%</b></div></div></div>
+   <div><b style="font-size:13px">Энэ үүргийн KPI</b><ul>${ROLEKPI[e.k].map(x=>`<li>${x}</li>`).join("")}</ul><div class="muted" style="margin-top:8px">Тоо нь жишээ. Бодит утга Jira worklog, GitLab MR-ээс identity map-аар холбогдоно.</div></div>`;
+  const tlLoad={};PROJ.forEach(p=>{if(p.tl)tlLoad[p.tl]=(tlLoad[p.tl]||0)+1});
+  $("obs").innerHTML=[
+   ["a","Орон тоо ≠ бодит","Төслийн менежер: бүтцэд 7, бодитоор 8 хүн."],
+   ["r","PM хэт ачаалал",pmOver.map(x=>x.n.split(" ")[0]+" — "+x.c).join(", ")+" төсөл (дүрэм ≤ 3)."],
+   ["r","Нэг хүний хамаарал","Программ менежер 1, дизайнер 2 хүн нийт "+PROJ.length+" төсөлд."],
+   ["a","BA / TL хоосон",noBA.length+" төсөл BA-гүй, "+noTL.length+" төсөл TL-гүй."],
+   ["g","TL : инженер","5 : "+engs.length+" (1 : 4) — хэвийн харьцаа."],
+   ["b","Ахлах : энгийн","10 : 10 — mentor хос болгох боломжтой."]
+  ].map(o=>`<div class="ob ${o[0]}"><b>${o[1]}</b>${o[2]}</div>`).join("");
+}
+function renderDepts(){
+  $("deptBody").innerHTML=DEPTS.map(d=>{const c={g:0,a:0,r:0};d.kpis.forEach(k=>c[stat(k)]++);const L=Math.round(avg(EMP.filter(e=>e.d===d.id).map(e=>e.load)));
+   return `<tr class="click ${dept===d.id?"sel":""}" tabindex="0" data-d="${d.id}"><td><b>${d.name}</b></td><td>${EMP.filter(e=>e.d===d.id).length}</td>
+   <td><div class="barcell"><div class="bar"><i style="width:${d.score}%;background:${col(sc(d.score))}"></i></div><b>${d.score.toFixed(1)}</b></div></td>
+   <td>${c.g?`<span class="pill g">${c.g}</span>`:"—"}</td><td>${c.a?`<span class="pill a">${c.a}</span>`:"—"}</td><td>${c.r?`<span class="pill r">${c.r}</span>`:"—"}</td>
+   <td>${L}%</td><td style="color:${d.prev>=0?"var(--green-ink)":"var(--red-ink)"};font-weight:600">${d.prev>0?"+":""}${d.prev}</td></tr>`}).join("");
+  document.querySelectorAll("#deptBody tr").forEach(tr=>{const go=()=>{dept=dept===tr.dataset.d?"all":tr.dataset.d;$("dept").value=dept;renderDepts();renderKpi();if(!$("sections").querySelector('[data-s="kpi"]').hidden)$("sections").querySelector('[data-s="kpi"]').scrollIntoView({behavior:"smooth"})};tr.onclick=go;tr.onkeydown=e=>{if(e.key==="Enter")go()}});
+}
+function renderKpi(){
+  const ks=allK.filter(x=>dept==="all"||x.d.id===dept);
+  $("kpiTitle").textContent=dept==="all"?"KPI дэлгэрэнгүй — бүх алба":"KPI дэлгэрэнгүй — "+D(dept).name;
+  $("kpiCount").textContent=ks.filter(x=>x.s==="g").length+" / "+ks.length+" KPI хангасан";
+  $("kpiGrid").innerHTML=ks.map(({d,k,s})=>`<div class="kpi"><div class="top"><div><div class="nm">${k[0]}</div><div class="src">${dept==="all"?d.name+" · ":""}${k[5]}</div></div><span class="pill ${s}">${ST[s]}</span></div>
+   <div class="val">${fmt(k[1],k[4])}</div><div class="bar"><i style="width:${Math.min(att(k),1)*100}%;background:${col(s)}"></i></div><div class="tg">Зорилт ${k[3]==="hi"?"≥":"≤"} ${fmt(k[2],k[4])}</div></div>`).join("");
+}
+function renderLoad(){
+  const c=["var(--amber)","var(--blue)","var(--navy)","var(--red)"];
+  $("loadRows").innerHTML=DEPTS.map(d=>{const e=EMP.filter(x=>x.d===d.id),n=e.length,b=[e.filter(x=>x.load<70).length,e.filter(x=>x.load>=70&&x.load<100).length,e.filter(x=>x.load>=100&&x.load<=110).length,e.filter(x=>x.load>110).length];
+   return `<div class="lrow"><span class="n">${d.name}</span><div class="stack" title="${b.join(" / ")}">${b.map((v,i)=>`<i style="width:${v/n*100}%;background:${c[i]}"></i>`).join("")}</div><span class="t">${b[3]} хэт</span></div>`}).join("");
+}
+function renderEmp(){
+  const q=$("q").value.trim().toLowerCase(),fd=$("empDept").value;
+  const list=EMP.filter(e=>(fd==="all"||e.d===fd)&&(!q||(e.nm+" "+e.role).toLowerCase().includes(q))).sort((a,b)=>b.score-a.score);
+  $("empCount").textContent=list.length+" ажилтан · KPI оноогоор эрэмбэлсэн";
+  $("empBody").innerHTML=list.slice(0,shown).map(e=>{const ls=e.load>110?"r":e.load<70?"a":"g";
+   return `<tr><td><b>${e.nm}</b></td><td>${e.role}</td><td class="muted">${D(e.d).name}</td><td>${e.as}</td><td>${e.done}</td><td>${e.ot}%</td><td><span class="pill ${ls}">${e.load}%</span></td>
+   <td><div class="barcell"><div class="bar"><i style="width:${e.score}%;background:${col(sc(e.score))}"></i></div><b>${e.score}%</b></div></td></tr>`}).join("")||'<tr><td colspan="8" class="muted">Хайлтад тохирох ажилтан алга. Өөр нэр эсвэл албан тушаалаар хайна уу.</td></tr>';
+  $("more").style.display=list.length>shown?"inline-block":"none";
+}
+function renderTrend(){
+  const T=TREND[period];$("trendSub").textContent=T.sub;
+  const W=1000,H=230,p={l:40,r:20,t:20,b:32},min=70,max=95,X=i=>p.l+i*(W-p.l-p.r)/(T.v.length-1),Y=v=>p.t+(max-v)/(max-min)*(H-p.t-p.b);
+  let g=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="KPI онооны чиг хандлага">`;
+  [70,75,80,85,90,95].forEach(v=>g+=`<line x1="${p.l}" x2="${W-p.r}" y1="${Y(v)}" y2="${Y(v)}" stroke="var(--line)"/><text x="${p.l-8}" y="${Y(v)+4}" font-size="11" fill="var(--faint)" text-anchor="end">${v}</text>`);
+  g+=`<line x1="${p.l}" x2="${W-p.r}" y1="${Y(85)}" y2="${Y(85)}" stroke="var(--red)" stroke-dasharray="5 5"/>`;
+  g+=`<path d="M${T.v.map((v,i)=>X(i)+" "+Y(v)).join(" L")} L${X(T.v.length-1)} ${Y(min)} L${X(0)} ${Y(min)}Z" fill="var(--blue)" opacity=".1"/><polyline points="${T.v.map((v,i)=>X(i)+","+Y(v)).join(" ")}" fill="none" stroke="var(--blue)" stroke-width="2.5"/>`;
+  T.v.forEach((v,i)=>g+=`<circle cx="${X(i)}" cy="${Y(v)}" r="4.5" fill="var(--card)" stroke="var(--blue)" stroke-width="2"/><text x="${X(i)}" y="${Y(v)-12}" font-size="12" font-weight="600" fill="var(--ink)" text-anchor="middle">${v}</text><text x="${X(i)}" y="${H-10}" font-size="12" fill="var(--mute)" text-anchor="middle">${T.lab[i]}</text>`);
+  $("trend").innerHTML=g+"</svg>";
+}
+function renderKci(){
+  const ks=showAll||!["cfo","cto","chro"].includes(role)?KCI:KCI.filter(k=>k[4]===role);
+  $("kciList").innerHTML=ks.map(k=>{const s=k[2]>=k[3]?"g":k[2]>=k[3]-3?"a":"r";
+   return `<div class="kci"><div class="h"><span><b>${k[0]}</b> <span class="muted">· ${k[1]}</span></span><span><b>${k[2]}%</b> <span class="muted">/ ${k[3]}%</span></span></div><div class="bar"><i style="width:${k[2]}%;background:${col(s)}"></i></div></div>`}).join("");
+}
+function renderSrc(){
+  $("srcBody").innerHTML=SRC.map(s=>`<tr><td><b>${s[0]}</b></td><td class="muted">${s[1]}</td><td>${s[2]}</td><td>${s[3]}</td><td><span class="pill ${s[4]}">${s[5]}</span></td></tr>`).join("");
+}
+$("bDept").innerHTML=opts;
+$("bq").oninput=()=>{bShown=15;renderBonus()};$("bDept").onchange=()=>{bShown=15;renderBonus()};$("bMore").onclick=()=>{bShown+=30;renderBonus()};
+[["pMonths","months",1],["pThr","thr",1],["pFloor","floor",1]].forEach(([id,k])=>$(id).oninput=e=>{BP[k]=+e.target.value;renderBonus();if(role==="chro")render();});
+$("engPer").onclick=e=>{const b=e.target.closest("button");if(b){engPer=+b.dataset.e;renderEng();}};
+$("finMode").onclick=e=>{const b=e.target.closest("button");if(b){finMode=b.dataset.f;renderFin();}};
+$("roles").onclick=e=>{const b=e.target.closest("button");if(b){role=b.dataset.r;render();}};
+$("showAll").onchange=e=>{showAll=e.target.checked;layout();renderKci();};
+$("dept").onchange=e=>{dept=e.target.value;renderDepts();renderKpi();};
+$("empDept").onchange=()=>{shown=12;renderEmp()};
+$("q").oninput=()=>{shown=12;renderEmp()};
+$("more").onclick=()=>{shown+=24;renderEmp()};
+document.querySelectorAll("[data-p]").forEach(b=>b.onclick=()=>{period=b.dataset.p;document.querySelectorAll("[data-p]").forEach(x=>x.classList.toggle("on",x===b));$("metaText").textContent=`${TOTAL} ажилтан, 7 алба · ${TREND[period].per}`;renderTrend();});
+render();
+</script>
+</body>
+</html>
